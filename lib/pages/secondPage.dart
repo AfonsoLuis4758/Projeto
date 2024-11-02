@@ -11,13 +11,11 @@ class SecondPage extends StatefulWidget {
 class _SecondPage extends State<SecondPage> {
   @override
   Widget build(BuildContext context) {
-    const title = 'Product View';
-
     return MaterialApp(
-      title: title,
+      title: "Product View",
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(title),
+          title: const Text("Product View"),
         ),
         body: GridView.count(
           // Create a grid with 2 columns. If you change the scrollDirection to
