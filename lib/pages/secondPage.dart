@@ -34,8 +34,8 @@ class _SecondPage extends State<SecondPage> {
               margin: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Image.asset("images/pants.jpg"),
-                  Text('Pants nº ${index}'),
+                  Image.asset("assets/images/pants.jpg"),
+                  Text('Pants nº $index'),
                 ],
               ),
             ));
