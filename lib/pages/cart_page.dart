@@ -5,12 +5,9 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: Text("CART"),
-        ),
+    return Scaffold(
+      body: Center(
+        child: Text("CART"),
       ),
     );
   }

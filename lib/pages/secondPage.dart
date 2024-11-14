@@ -23,55 +23,51 @@ class _SecondPage extends State<SecondPage> {
   final List _pages = [const SearchPage(), const HomePage(), const CartPage()];
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "LusoVeste",
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.green,
-          title: const Text(
-            "LusoVest",
-            style: TextStyle(color: Colors.white),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.account_circle_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/profilepage");
-              },
-            )
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: const Text(
+          "LusoVest",
+          style: TextStyle(color: Colors.white),
         ),
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(
-              canvasColor: Colors.green,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .copyWith(bodySmall: const TextStyle(color: Colors.green))),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: _navigateBottomBar,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: "SEARCH",
-                activeIcon: Icon(Icons.search_outlined),
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.menu),
-                  label: "MENU",
-                  activeIcon: Icon(Icons.menu_outlined)),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart),
-                  label: "CART",
-                  activeIcon: Icon(Icons.shopping_cart_outlined)),
-            ],
-          ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.account_circle_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/profilepage");
+            },
+          )
+        ],
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+            canvasColor: Colors.green,
+            textTheme: Theme.of(context)
+                .textTheme
+                .copyWith(bodySmall: const TextStyle(color: Colors.green))),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _navigateBottomBar,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: "SEARCH",
+              activeIcon: Icon(Icons.search_outlined),
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.menu),
+                label: "MENU",
+                activeIcon: Icon(Icons.menu_outlined)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart),
+                label: "CART",
+                activeIcon: Icon(Icons.shopping_cart_outlined)),
+          ],
         ),
       ),
     );
