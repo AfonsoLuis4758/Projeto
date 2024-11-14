@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/pages/cart_page.dart';
 import 'package:project/pages/home_page.dart';
-import 'package:project/pages/profile_page.dart';
 import 'package:project/pages/search_page.dart';
 
 class SecondPage extends StatefulWidget {
