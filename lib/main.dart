@@ -1,5 +1,6 @@
 import 'package:project/pages/firstPage.dart';
 import 'package:project/pages/secondPage.dart';
+import 'package:project/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async => runApp(const MyApp());
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/firstpage": (context) => const FirstPage(),
         "/secondpage": (context) => const SecondPage(),
+        "/profilepage": (context) => const ProfilePage(),
       },
     );
   }

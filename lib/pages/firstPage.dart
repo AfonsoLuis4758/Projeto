@@ -17,14 +17,12 @@ class _FirstPage extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Log In page'),
-      ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
             child: TextField(
               controller: userController,
               keyboardType: TextInputType.emailAddress,
@@ -35,7 +33,7 @@ class _FirstPage extends State<FirstPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: TextFormField(
               controller: passController,
               obscureText: !_passwordVisible,
@@ -59,20 +57,23 @@ class _FirstPage extends State<FirstPage> {
             ),
           ),
           Center(
-            child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    userName = userController.text;
-                    passWord = passController.text;
-                  });
-                },
-                child: const Text(
-                  "Log In",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
-                )),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 48),
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      userName = userController.text;
+                      passWord = passController.text;
+                    });
+                  },
+                  child: const Text(
+                    "Log In",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54),
+                  )),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(40),
