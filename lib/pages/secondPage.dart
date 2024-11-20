@@ -53,20 +53,24 @@ class _SecondPage extends State<SecondPage> {
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _navigateBottomBar,
-          items: [
+          items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.search, color: Colors.white),
               label: "SEARCH",
-              activeIcon: Icon(Icons.search_outlined),
+              activeIcon: Icon(
+                Icons.search_outlined,
+                color: Colors.white,
+              ),
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.menu),
+                icon: Icon(Icons.menu, color: Colors.white),
                 label: "MENU",
-                activeIcon: Icon(Icons.menu_outlined)),
+                activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart),
+                icon: Icon(Icons.shopping_cart, color: Colors.white),
                 label: "CART",
-                activeIcon: Icon(Icons.shopping_cart_outlined)),
+                activeIcon:
+                    Icon(Icons.shopping_cart_outlined, color: Colors.white)),
           ],
         ),
       ),
