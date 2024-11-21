@@ -1,6 +1,7 @@
-import 'package:project/pages/firstPage.dart';
-import 'package:project/pages/secondPage.dart';
+import 'package:project/pages/login_page.dart';
+import 'package:project/pages/main_page.dart';
 import 'package:project/pages/profile_page.dart';
+import 'package:project/pages/creation_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async => runApp(const MyApp());
@@ -12,11 +13,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const FirstPage(),
+      home: const MainPage(),
       routes: {
-        "/firstpage": (context) => const FirstPage(),
-        "/secondpage": (context) => const SecondPage(),
+        "/loginpage": (context) => const LoginPage(),
+        "/mainpage": (context) => const MainPage(),
         "/profilepage": (context) => const ProfilePage(),
+        "/creationpage": (context) => const CreationPage(),
       },
     );
   }

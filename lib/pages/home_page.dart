@@ -16,10 +16,10 @@ class _HomePage extends State<HomePage> {
         children: [
           Row(
             children: [
-              ElevatedButton(onPressed: () {}, child: Text("Filter")),
+              ElevatedButton(onPressed: () {}, child: const Text("Filter")),
               ElevatedButton(
                   onPressed: () {},
-                  child: Icon(
+                  child: const Icon(
                     Icons.grid_3x3,
                     color: Colors.white,
                   ))
@@ -51,6 +51,14 @@ class _HomePage extends State<HomePage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.pushNamed(context, "/creationpage");
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -3,15 +3,15 @@ import 'package:project/pages/cart_page.dart';
 import 'package:project/pages/home_page.dart';
 import 'package:project/pages/search_page.dart';
 
-class SecondPage extends StatefulWidget {
-  //secondPage
+class MainPage extends StatefulWidget {
+  //MainPage
 
-  const SecondPage({super.key});
+  const MainPage({super.key});
   @override
-  State<SecondPage> createState() => _SecondPage();
+  State<MainPage> createState() => _MainPage();
 }
 
-class _SecondPage extends State<SecondPage> {
+class _MainPage extends State<MainPage> {
   int _selectedIndex = 1;
 
   void _navigateBottomBar(int index) {

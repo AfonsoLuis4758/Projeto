@@ -14,8 +14,15 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: const Center(
-        child: Text("PROFILE"),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/loginpage");
+            },
+            child: const Text(
+              "Log In",
+              style: TextStyle(fontSize: 24),
+            )),
       ),
     );
   }

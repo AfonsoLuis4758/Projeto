@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-class FirstPage extends StatefulWidget {
-  //secondPage
-
-  const FirstPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
   @override
-  State<FirstPage> createState() => _FirstPage();
+  State<LoginPage> createState() => _LoginPage();
 }
 
-class _FirstPage extends State<FirstPage> {
+class _LoginPage extends State<LoginPage> {
   String userName = '';
   String passWord = '';
   bool _passwordVisible = false;
@@ -81,7 +79,7 @@ class _FirstPage extends State<FirstPage> {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, "/secondpage");
+                    Navigator.pushNamed(context, "/mainpage");
                   },
                   child: Card(
                     child: Column(
