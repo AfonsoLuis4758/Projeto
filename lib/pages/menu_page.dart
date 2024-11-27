@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class MenuPage extends StatefulWidget {
   //secondPage
 
-  const HomePage({super.key});
+  const MenuPage({super.key});
   @override
-  State<HomePage> createState() => _HomePage();
+  State<MenuPage> createState() => _MenuPage();
 }
 
-class _HomePage extends State<HomePage> {
+class _MenuPage extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +33,25 @@ class _HomePage extends State<HomePage> {
                 return Center(
                     child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 5,
-                    child: Column(
-                      children: [
-                        Image.asset("assets/images/pants.jpg"),
-                        Text('Pants nº $index'),
-                      ],
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/itempage", arguments: {
+                        "image": "assets/images/pants.jpg",
+                        "name": "Pants nº $index"
+                      });
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          Image.asset("assets/images/pants.jpg"),
+                          Text('Pants nº $index'),
+                        ],
+                      ),
                     ),
                   ),
                 ));

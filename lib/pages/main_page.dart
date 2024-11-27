@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:project/pages/cart_page.dart';
-import 'package:project/pages/home_page.dart';
+import 'package:project/pages/menu_page.dart';
 import 'package:project/pages/search_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -20,9 +21,15 @@ class _MainPage extends State<MainPage> {
     });
   }
 
-  final List _pages = [const SearchPage(), const HomePage(), const CartPage()];
+  final List _pages = [const SearchPage(), const MenuPage(), const CartPage()];
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+    if (arguments["page"] != null) {
+      _navigateBottomBar(arguments["page"]);
+      arguments.remove("page");
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
