@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:developer';
 import 'package:project/pages/cart_page.dart';
 import 'package:project/pages/menu_page.dart';
 import 'package:project/pages/search_page.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project/pages/main_page.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key});

@@ -49,79 +49,91 @@ class CreationPage extends StatelessWidget {
               Column(
                 children: [
                   const Text("Tamanhos"),
-                  Column(children: [
-                    Row(
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("S")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("M")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("L")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("XL")
-                      ],
-                    )
-                  ]),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("S")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("M")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("L")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("XL")
+                          ],
+                        )
+                      ]),
                 ],
               ),
+              Expanded(child: SizedBox()),
               Column(
                 children: [
                   const Text("Cores"),
-                  Column(children: [
-                    Row(
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Azul")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Verde")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Amarelo")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Vermelho")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Preto")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(value: true, onChanged: (value) {}),
-                        const Text("Branco")
-                      ],
-                    )
-                  ]),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Azul")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Verde")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Amarelo")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Vermelho")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Preto")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(value: true, onChanged: (value) {}),
+                            const Text("Branco")
+                          ],
+                        )
+                      ]),
                 ],
               ),
             ],
           ),
+          Expanded(child: SizedBox()),
+          ElevatedButton(
+              onPressed: () {},
+              child: const Text(
+                "Adicionar",
+                style: TextStyle(fontSize: 24),
+              )),
         ],
       )),
     );
