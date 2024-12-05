@@ -20,7 +20,7 @@ class _MainPage extends State<MainPage> {
     });
   }
 
-  final List _pages = [const SearchPage(), const MenuPage(), const CartPage()];
+  final List _pages = [SearchPage(), MenuPage(), CartPage()];
   @override
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
