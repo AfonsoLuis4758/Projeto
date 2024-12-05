@@ -33,37 +33,43 @@ class _ItemPage extends State<ItemPage> {
       ),
       body: Column(children: <Widget>[
         Image(image: AssetImage(arguments['image'])),
-        Row(
-          children: [
-            Text(arguments['name'], style: TextStyle(fontSize: 30)),
-            Expanded(child: SizedBox()),
-            Icon(
-              Icons.favorite,
-              color: Colors.green,
-            )
-          ],
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Text(arguments['name'], style: TextStyle(fontSize: 30)),
+              Expanded(child: SizedBox()),
+              Icon(
+                Icons.favorite,
+                color: Colors.green,
+              )
+            ],
+          ),
         ),
-        Row(
-          children: [
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: new BoxDecoration(
-                color: Colors.orange,
-                shape: BoxShape.circle,
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: new BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-            Container(
-              width: 40.0,
-              height: 40.0,
-              decoration: new BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
+              Container(
+                width: 40.0,
+                height: 40.0,
+                decoration: new BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-            Expanded(child: SizedBox()),
-            Text("00.00€", style: TextStyle(fontSize: 40))
-          ],
+              Expanded(child: SizedBox()),
+              Text("00.00€", style: TextStyle(fontSize: 40))
+            ],
+          ),
         ),
         Row(
           children: [
