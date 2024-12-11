@@ -1,3 +1,4 @@
+import 'package:project/pages/create_account.dart';
 import 'package:project/pages/login_page.dart';
 import 'package:project/pages/main_page.dart';
 import 'package:project/pages/profile_page.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       home: const MainPage(),
       routes: {
         "/loginpage": (context) => const LoginPage(),
+        "/createaccount": (context) => const CreateAccount(),
         "/mainpage": (context) => const MainPage(),
         "/profilepage": (context) => const ProfilePage(),
         "/creationpage": (context) => const CreationPage(),
