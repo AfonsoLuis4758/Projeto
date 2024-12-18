@@ -33,7 +33,6 @@ class _LoginPage extends State<LoginPage> {
         token = response.body;
       });
       print(prefs.getString('token'));
-      ;
     } else {
       print("error");
     }

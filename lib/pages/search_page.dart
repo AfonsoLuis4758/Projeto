@@ -35,6 +35,13 @@ class _SearchPage extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightGreen[900],
+        title: const Text(
+          "LusoVest",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Column(
         children: [
           Container(

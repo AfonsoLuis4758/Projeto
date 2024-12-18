@@ -30,25 +30,6 @@ class _MainPage extends State<MainPage> {
       arguments.remove("page");
     }
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text(
-          "LusoVest",
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.account_circle_outlined,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, "/profilepage");
-            },
-          )
-        ],
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
