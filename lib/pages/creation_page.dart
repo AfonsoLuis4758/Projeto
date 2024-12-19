@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
 class CreationPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class CreationPage extends StatefulWidget {
 }
 
 class _CreationPage extends State<CreationPage> {
+  List<int>? imgForApi;
   String name = '';
   String type = '';
   String gender = '';
@@ -33,15 +35,18 @@ class _CreationPage extends State<CreationPage> {
   }
 
   Future apiCall(
-      name, type, stock, gender, price, colors, sizes, recent) async {
+      name, type, stock, gender, price, colors, sizes, recent, file) async {
     final String? token = await getToken();
+    //String base64Image = base64Encode(file);
     print(token);
+    String encodedImg = file.toString();
     http.Response response;
     response = await http.post(
       Uri.parse("http://localhost:5000/products"),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
+        'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXIiOiJkYWRhQGdtYWlsLmNvbSJ9LCJpYXQiOjE3MzQ2MTMzNDgsImV4cCI6MTczNTQ3NzM0OH0.jQMeGeIwHu99Y3C4w6CqMAYn9SYhYFOEvTwF3ZLfJp4',
       },
       body: jsonEncode({
         "name": name,
@@ -51,7 +56,8 @@ class _CreationPage extends State<CreationPage> {
         "price": price,
         "color": colors,
         "sizes": sizes,
-        "recent": recent
+        "recent": recent,
+        "image": encodedImg
       }),
     );
 
@@ -60,6 +66,18 @@ class _CreationPage extends State<CreationPage> {
     } else {
       print("error");
     }
+  }
+
+  void takeSnapshot() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? img = await picker.pickImage(
+        source: ImageSource.camera, // alternatively, use ImageSource.gallery
+        imageQuality: 80);
+    if (img == null) return;
+    List<int> uniImg = await img.readAsBytes();
+    setState(() {
+      imgForApi = uniImg;
+    });
   }
 
   @override
@@ -81,7 +99,9 @@ class _CreationPage extends State<CreationPage> {
             icon: const Icon(
               Icons.camera_alt_rounded,
             ),
-            onPressed: () {},
+            onPressed: () {
+              takeSnapshot();
+            },
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -329,7 +349,7 @@ class _CreationPage extends State<CreationPage> {
                   price = priceController.text;
 
                   apiCall(name, type, double.parse(stock), gender,
-                      double.parse(price), colors, sizes, recent);
+                      double.parse(price), colors, sizes, recent, imgForApi);
                 });
               },
               child: const Text(
