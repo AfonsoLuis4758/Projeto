@@ -67,7 +67,9 @@ class _MenuPage extends State<MenuPage> {
                       elevation: 5,
                       child: Column(
                         children: [
-                          Image.asset("assets/images/pants.jpg"),
+                          Hero(
+                              tag: "herotag",
+                              child: Image.asset("assets/images/pants.jpg")),
                           Text('Pants nº $index'),
                         ],
                       ),

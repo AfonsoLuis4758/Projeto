@@ -32,7 +32,9 @@ class _ItemPage extends State<ItemPage> {
         ],
       ),
       body: Column(children: <Widget>[
-        Image(image: AssetImage(arguments['image'])),
+        Hero(
+            tag: "herotag",
+            child: Image(image: AssetImage(arguments['image']))),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(

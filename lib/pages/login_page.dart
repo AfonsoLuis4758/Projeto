@@ -20,7 +20,7 @@ class _LoginPage extends State<LoginPage> {
   Future apiCall(email, password) async {
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/users/login"),
+      Uri.parse("http://localhost:5000/user/login"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -29,6 +29,7 @@ class _LoginPage extends State<LoginPage> {
     if (response.statusCode == 200) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.body);
+      await prefs.setString('email', email);
       setState(() {
         token = response.body;
       });

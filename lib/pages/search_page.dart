@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 //import 'dart:convert';
 
 class SearchPage extends StatefulWidget {
@@ -10,26 +13,69 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPage extends State<SearchPage> {
-  List<String> data = [
-    'Calças',
-    'T-shirt',
-    'Sweatshirt',
-    'Sapatilhas',
-    'Casaco'
-  ];
+  List<dynamic> data = []; //to receive from api latter
 
-  List<String> searchResults = [];
+  List<dynamic> searchResults = [];
 
   final controller = TextEditingController();
   Widget listview = _mainListView();
+  int flag = 0;
 
   void onQueryChanged(String query) {
     setState(() {
+      if (flag == 0) {
+        flag++;
+        getFromApi();
+      }
       listview = _searchListView(searchResults);
       searchResults = data
           .where((item) => item.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
+  }
+
+  Future getFromApi() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
+    final String? email = prefs.getString('email');
+    //String base64Image = base64Encode(file);
+    String token = futureToken!.substring(1, futureToken.length - 1);
+
+    http.Response response;
+    response = await http
+        .get(Uri.parse("http://localhost:5000/user/searches/$email"), headers: {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      setState(() {
+        data = json.decode(response.body);
+      });
+    }
+  }
+
+  Future sendToApi(search) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
+    final String? email = prefs.getString('email');
+    //String base64Image = base64Encode(file);
+    String token = futureToken!.substring(1, futureToken.length - 1);
+
+    http.Response response;
+    response = await http.put(
+      Uri.parse("http://localhost:5000/user/searches/$email"),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"search": search}),
+    );
+
+    if (response.statusCode == 200) {
+      print("posted");
+    } else {
+      print("error");
+    }
   }
 
   @override
@@ -48,7 +94,8 @@ class _SearchPage extends State<SearchPage> {
             padding: const EdgeInsets.all(16),
             child: TextField(
               onChanged: onQueryChanged,
-              onSubmitted: (query) {
+              onSubmitted: (query) async {
+                await sendToApi(query);
                 data.insert(0, query);
                 //final mapEncoded = jsonEncode(data);
                 //await storage.write(key: "mapKey", value: mapEncoded);

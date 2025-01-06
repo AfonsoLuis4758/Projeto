@@ -68,7 +68,7 @@ class _CreateAccount extends State<CreateAccount> {
   Future apiCall(username, password, email, address, gender) async {
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/users/register"),
+      Uri.parse("http://localhost:5000/user/register"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

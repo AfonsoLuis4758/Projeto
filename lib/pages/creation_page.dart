@@ -13,12 +13,15 @@ class CreationPage extends StatefulWidget {
 
 class _CreationPage extends State<CreationPage> {
   List<int>? imgForApi;
+  String source = "";
   String name = '';
   String type = '';
   String gender = '';
   String price = "";
   String stock = "";
   bool recent = true;
+  List colorCheckbox = [false, false, false, false, false, false];
+  List sizeCheckbox = [false, false, false, false];
   List colors = [];
   List sizes = [];
 
@@ -30,23 +33,24 @@ class _CreationPage extends State<CreationPage> {
 
   Future<String?> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    final String? token = prefs.getString('token');
     return token;
   }
 
   Future apiCall(
       name, type, stock, gender, price, colors, sizes, recent, file) async {
-    final String? token = await getToken();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
     //String base64Image = base64Encode(file);
+    String token = futureToken!.substring(1, futureToken.length - 1);
     print(token);
     String encodedImg = file.toString();
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/products"),
+      Uri.parse("http://localhost:5000/product"),
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXIiOiJkYWRhQGdtYWlsLmNvbSJ9LCJpYXQiOjE3MzQ2MTMzNDgsImV4cCI6MTczNTQ3NzM0OH0.jQMeGeIwHu99Y3C4w6CqMAYn9SYhYFOEvTwF3ZLfJp4',
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
       body: jsonEncode({
         "name": name,
@@ -68,16 +72,28 @@ class _CreationPage extends State<CreationPage> {
     }
   }
 
-  void takeSnapshot() async {
+  void takeSnapshot(source) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? img = await picker.pickImage(
-        source: ImageSource.camera, // alternatively, use ImageSource.gallery
-        imageQuality: 80);
-    if (img == null) return;
-    List<int> uniImg = await img.readAsBytes();
-    setState(() {
-      imgForApi = uniImg;
-    });
+    if (source == "camera") {
+      final XFile? img = await picker.pickImage(
+          source: ImageSource.camera, // alternatively, use ImageSource.gallery
+          imageQuality: 80);
+      if (img == null) return;
+      List<int> uniImg = await img.readAsBytes();
+      setState(() {
+        imgForApi = uniImg;
+      });
+    }
+    if (source == "gallery") {
+      final XFile? img = await picker.pickImage(
+          source: ImageSource.gallery, // alternatively, use ImageSource.gallery
+          imageQuality: 80);
+      if (img == null) return;
+      List<int> uniImg = await img.readAsBytes();
+      setState(() {
+        imgForApi = uniImg;
+      });
+    }
   }
 
   @override
@@ -94,14 +110,30 @@ class _CreationPage extends State<CreationPage> {
       body: Center(
           child: ListView(
         children: [
-          IconButton(
-            iconSize: 200,
-            icon: const Icon(
-              Icons.camera_alt_rounded,
-            ),
-            onPressed: () {
-              takeSnapshot();
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                iconSize: 150,
+                icon: const Icon(
+                  Icons.camera_alt_rounded,
+                ),
+                onPressed: () {
+                  source = "camera";
+                  takeSnapshot(source);
+                },
+              ),
+              IconButton(
+                iconSize: 150,
+                icon: const Icon(
+                  Icons.image,
+                ),
+                onPressed: () {
+                  source = "gallery";
+                  takeSnapshot(source);
+                },
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -159,12 +191,18 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: sizeCheckbox[0],
                                 onChanged: (value) {
                                   if (value == true) {
                                     sizes.add("S");
+                                    setState(() {
+                                      sizeCheckbox[0] = true;
+                                    });
                                   } else {
-                                    sizes.remove(colors.indexOf("S"));
+                                    sizes.removeAt(colors.indexOf("S"));
+                                    setState(() {
+                                      sizeCheckbox[0] = false;
+                                    });
                                   }
                                 }),
                             const Text("S")
@@ -173,12 +211,18 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: sizeCheckbox[1],
                                 onChanged: (value) {
                                   if (value == true) {
                                     sizes.add("M");
+                                    setState(() {
+                                      sizeCheckbox[1] = true;
+                                    });
                                   } else {
-                                    sizes.remove(colors.indexOf("M"));
+                                    sizes.removeAt(colors.indexOf("M"));
+                                    setState(() {
+                                      sizeCheckbox[1] = false;
+                                    });
                                   }
                                 }),
                             const Text("M")
@@ -187,12 +231,18 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: sizeCheckbox[2],
                                 onChanged: (value) {
                                   if (value == true) {
                                     sizes.add("L");
+                                    setState(() {
+                                      sizeCheckbox[2] = true;
+                                    });
                                   } else {
-                                    sizes.remove(colors.indexOf("L"));
+                                    sizes.removeAt(colors.indexOf("L"));
+                                    setState(() {
+                                      sizeCheckbox[2] = false;
+                                    });
                                   }
                                 }),
                             const Text("L")
@@ -201,12 +251,18 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: sizeCheckbox[3],
                                 onChanged: (value) {
                                   if (value == true) {
                                     sizes.add("XL");
+                                    setState(() {
+                                      sizeCheckbox[3] = true;
+                                    });
                                   } else {
-                                    sizes.remove(colors.indexOf("XL"));
+                                    sizes.removeAt(colors.indexOf("XL"));
+                                    setState(() {
+                                      sizeCheckbox[3] = false;
+                                    });
                                   }
                                 }),
                             const Text("XL")
@@ -225,13 +281,19 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: colorCheckbox[0],
                                 onChanged: (value) {
                                   if (value == true) {
                                     colors.add("Azul");
+                                    setState(() {
+                                      colorCheckbox[0] = true;
+                                    });
                                     print(colors);
                                   } else {
-                                    colors.remove(colors.indexOf("Azul"));
+                                    colors.removeAt(colors.indexOf("Azul"));
+                                    setState(() {
+                                      colorCheckbox[0] = false;
+                                    });
                                   }
                                 }),
                             const Text("Azul")
@@ -240,15 +302,18 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: colorCheckbox[1],
                                 onChanged: (value) {
                                   if (value == true) {
                                     colors.add("Verde");
                                     setState(() {
-                                      value = true;
+                                      colorCheckbox[1] = true;
                                     });
                                   } else {
-                                    colors.remove(colors.indexOf("Verde"));
+                                    colors.removeAt(colors.indexOf("Verde"));
+                                    setState(() {
+                                      colorCheckbox[1] = false;
+                                    });
                                   }
                                 }),
                             const Text("Verde")
@@ -256,19 +321,39 @@ class _CreationPage extends State<CreationPage> {
                         ),
                         Row(
                           children: [
-                            Checkbox(value: false, onChanged: (value) {}),
+                            Checkbox(
+                                value: colorCheckbox[2],
+                                onChanged: (value) {
+                                  if (value == true) {
+                                    colors.add("Amarelo");
+                                    setState(() {
+                                      colorCheckbox[2] = true;
+                                    });
+                                  } else {
+                                    colors.removeAt(colors.indexOf("Amarelo"));
+                                    setState(() {
+                                      colorCheckbox[2] = false;
+                                    });
+                                  }
+                                }),
                             const Text("Amarelo")
                           ],
                         ),
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: colorCheckbox[3],
                                 onChanged: (value) {
                                   if (value == true) {
                                     colors.add("Vermelho");
+                                    setState(() {
+                                      colorCheckbox[3] = true;
+                                    });
                                   } else {
-                                    colors.remove(colors.indexOf("Vermelho"));
+                                    colors.removeAt(colors.indexOf("Vermelho"));
+                                    setState(() {
+                                      colorCheckbox[3] = false;
+                                    });
                                   }
                                 }),
                             const Text("Vermelho")
@@ -277,12 +362,19 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: colorCheckbox[4],
                                 onChanged: (value) {
                                   if (value == true) {
                                     colors.add("Preto");
+                                    setState(() {
+                                      colorCheckbox[4] = true;
+                                    });
                                   } else {
-                                    colors.remove(colors.indexOf("Preto"));
+                                    colors.removeAt(colors.indexOf("Preto"));
+
+                                    setState(() {
+                                      colorCheckbox[4] = false;
+                                    });
                                   }
                                 }),
                             const Text("Preto")
@@ -291,12 +383,19 @@ class _CreationPage extends State<CreationPage> {
                         Row(
                           children: [
                             Checkbox(
-                                value: false,
+                                value: colorCheckbox[5],
                                 onChanged: (value) {
                                   if (value == true) {
                                     colors.add("Branco");
+                                    setState(() {
+                                      colorCheckbox[5] = true;
+                                    });
                                   } else {
-                                    colors.remove(colors.indexOf("Branco"));
+                                    colors.removeAt(colors.indexOf("Branco"));
+
+                                    setState(() {
+                                      colorCheckbox[5] = false;
+                                    });
                                   }
                                 }),
                             const Text("Branco")
@@ -323,7 +422,7 @@ class _CreationPage extends State<CreationPage> {
               child: Row(
                 children: [
                   Checkbox(
-                      value: true,
+                      value: recent,
                       onChanged: (value) {
                         if (value == true) {
                           setState(() {
