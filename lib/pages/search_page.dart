@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project/func/expdialogue.dart';
 import 'dart:convert';
 //import 'dart:convert';
 
@@ -51,6 +52,12 @@ class _SearchPage extends State<SearchPage> {
       setState(() {
         data = json.decode(response.body);
       });
+    } else if (response.statusCode == 401 && prefs.getString('token') != null) {
+      await prefs.remove('email');
+      await prefs.remove('token');
+      await showMyDialog(context);
+    } else {
+      print("error");
     }
   }
 
@@ -82,14 +89,37 @@ class _SearchPage extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.lightGreen[900],
+        backgroundColor: Colors.green,
         title: const Text(
           "LusoVest",
           style: TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.account_circle_outlined,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/unloggedpage");
+            },
+          )
+        ],
       ),
       body: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child:
+                      ElevatedButton(onPressed: () {}, child: Text("Homem"))),
+              Expanded(
+                  child:
+                      ElevatedButton(onPressed: () {}, child: Text("Mulher"))),
+            ],
+          ),
           Container(
             padding: const EdgeInsets.all(16),
             child: TextField(
@@ -97,8 +127,6 @@ class _SearchPage extends State<SearchPage> {
               onSubmitted: (query) async {
                 await sendToApi(query);
                 data.insert(0, query);
-                //final mapEncoded = jsonEncode(data);
-                //await storage.write(key: "mapKey", value: mapEncoded);
               },
               controller: controller,
               decoration: const InputDecoration(

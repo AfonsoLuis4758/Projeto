@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfilePage extends StatefulWidget {
+  //MainPage
 
+  const ProfilePage({super.key});
+  @override
+  State<ProfilePage> createState() => _ProfilePage();
+}
+
+class _ProfilePage extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,16 +20,23 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, "/loginpage");
-            },
-            child: const Text(
-              "Log In",
-              style: TextStyle(fontSize: 24),
-            )),
-      ),
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/avatar.png"),
+            Text("UserName"),
+            Text("Email"),
+            Text("UserName"),
+            Text("Morada:\p Rua morada,71"),
+            Text("Género: Masculino"),
+            Row(
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("Editar perfil")),
+                ElevatedButton(onPressed: () {}, child: Text("Log out")),
+              ],
+            )
+          ]),
     );
   }
 }

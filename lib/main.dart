@@ -1,7 +1,8 @@
 import 'package:project/pages/create_account.dart';
 import 'package:project/pages/login_page.dart';
-import 'package:project/pages/main_page.dart';
 import 'package:project/pages/profile_page.dart';
+import 'package:project/pages/main_page.dart';
+import 'package:project/pages/unlogged_page.dart';
 import 'package:project/pages/creation_page.dart';
 import 'package:project/pages/item_page.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,9 @@ class MyApp extends StatelessWidget {
         "/loginpage": (context) => const LoginPage(),
         "/createaccount": (context) => const CreateAccount(),
         "/mainpage": (context) => const MainPage(),
-        "/profilepage": (context) => const ProfilePage(),
+        "/unloggedpage": (context) => const UnloggedPage(),
         "/creationpage": (context) => const CreationPage(),
+        "/profilepage": (context) => const ProfilePage(),
         "/itempage": (context) => const ItemPage(),
       },
     );

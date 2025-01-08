@@ -10,6 +10,9 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPage extends State<MenuPage> {
   @override
+  IconData gridType = Icons.grid_3x3;
+  int cardCount = 2;
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -37,17 +40,27 @@ class _MenuPage extends State<MenuPage> {
             children: [
               ElevatedButton(onPressed: () {}, child: const Text("Filter")),
               ElevatedButton(
-                  onPressed: () {},
-                  child: const Icon(
-                    Icons.grid_3x3,
-                    color: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                      if (cardCount == 2) {
+                        cardCount = 1;
+                        gridType = Icons.list;
+                      } else {
+                        cardCount = 2;
+                        gridType = Icons.grid_3x3;
+                      }
+                    });
+                  },
+                  child: Icon(
+                    gridType,
+                    color: Colors.black,
                   ))
             ],
           ),
           Expanded(
             child: GridView.count(
               childAspectRatio: (1 / 1.5),
-              crossAxisCount: 2,
+              crossAxisCount: cardCount,
               children: List.generate(20, (index) {
                 return Center(
                     child: Padding(
