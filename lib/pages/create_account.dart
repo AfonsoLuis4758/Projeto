@@ -77,7 +77,8 @@ class _CreateAccount extends State<CreateAccount> {
         "password": password,
         "email": email,
         "address": address,
-        "gender": gender
+        "gender": gender,
+        "image": ""
       }),
     );
     if (response.statusCode == 200) {

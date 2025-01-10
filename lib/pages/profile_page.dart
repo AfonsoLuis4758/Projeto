@@ -56,15 +56,11 @@ class _ProfilePage extends State<ProfilePage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                print(snapshot.data["username"]);
-                if (snapshot.data["image"] != null) {
-                  setState(() {
-                    image = Image.memory(
-                      utf8.encode(snapshot.data["image"]),
-                      height: 150.0,
-                      width: 100.0,
-                    );
-                  });
+                if (snapshot.data["image"] != "") {
+                  image = Image.memory(
+                    base64Decode(snapshot.data["image"].replaceAll("-", "/")),
+                    height: 200.0,
+                  );
                 }
 
                 // Display the fetched data
@@ -73,7 +69,7 @@ class _ProfilePage extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(20.0),
                           child: image),
                       Text(snapshot.data["username"]),
                       Text(snapshot.data["email"]),
@@ -81,10 +77,23 @@ class _ProfilePage extends State<ProfilePage> {
                       Text("Género: " + snapshot.data['gender']),
                       Row(
                         children: [
-                          ElevatedButton(
-                              onPressed: () {}, child: Text("Editar perfil")),
-                          ElevatedButton(
-                              onPressed: () {}, child: Text("Log out")),
+                          Expanded(
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, "/editprofilepage",
+                                      arguments: {
+                                        "username": snapshot.data["username"],
+                                        "address": snapshot.data["address"],
+                                        "gender": snapshot.data["gender"]
+                                      });
+                                },
+                                child: Text("Editar perfil")),
+                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                                onPressed: () {}, child: Text("Log out")),
+                          ),
                         ],
                       )
                     ]);

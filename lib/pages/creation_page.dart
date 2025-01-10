@@ -44,7 +44,10 @@ class _CreationPage extends State<CreationPage> {
     //String base64Image = base64Encode(file);
     String token = futureToken!.substring(1, futureToken.length - 1);
     print(token);
-    String encodedImg = file.toString();
+
+    String imgString = base64Encode(file);
+    imgString = imgString.replaceAll("/", "-");
+
     http.Response response;
     response = await http.post(
       Uri.parse("http://localhost:5000/product"),
@@ -61,7 +64,7 @@ class _CreationPage extends State<CreationPage> {
         "color": colors,
         "sizes": sizes,
         "recent": recent,
-        "image": encodedImg
+        "image": imgString
       }),
     );
 
@@ -79,20 +82,14 @@ class _CreationPage extends State<CreationPage> {
           source: ImageSource.camera, // alternatively, use ImageSource.gallery
           imageQuality: 80);
       if (img == null) return;
-      List<int> uniImg = await img.readAsBytes();
-      setState(() {
-        imgForApi = uniImg;
-      });
+      imgForApi = await img.readAsBytes();
     }
     if (source == "gallery") {
       final XFile? img = await picker.pickImage(
           source: ImageSource.gallery, // alternatively, use ImageSource.gallery
           imageQuality: 80);
       if (img == null) return;
-      List<int> uniImg = await img.readAsBytes();
-      setState(() {
-        imgForApi = uniImg;
-      });
+      imgForApi = await img.readAsBytes();
     }
   }
 
