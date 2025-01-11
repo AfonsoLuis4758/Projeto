@@ -17,6 +17,7 @@ class _MenuPage extends State<MenuPage> {
   Color discountColor = Colors.green;
   String discountPrice = "";
   List userWishlist = [];
+  List<bool> isPressed = [];
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -85,7 +86,6 @@ class _MenuPage extends State<MenuPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                List<bool> isPressed = [];
                 // Display the fetched data
                 return Scaffold(
                   body: Column(children: [
