@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rowbuilder/rowbuilder.dart';
+import 'dart:convert';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key});
@@ -11,6 +13,12 @@ class _ItemPage extends State<ItemPage> {
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
+    Color discountColor = Colors.white;
+    String discountPrice = "";
+    if (arguments["promotion"] != 0) {
+      discountColor = Colors.black;
+      discountPrice = arguments["price"].toString();
+    }
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
@@ -33,8 +41,11 @@ class _ItemPage extends State<ItemPage> {
       ),
       body: Column(children: <Widget>[
         Hero(
-            tag: "herotag",
-            child: Image(image: AssetImage(arguments['image']))),
+            tag: "herotag" + arguments['id'],
+            child: Image.memory(
+              base64Decode(arguments["image"].replaceAll("-", "/")),
+              height: 400.0,
+            )),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -52,49 +63,68 @@ class _ItemPage extends State<ItemPage> {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Container(
-                width: 40.0,
-                height: 40.0,
-                decoration: new BoxDecoration(
-                  color: Colors.orange,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              Container(
-                width: 40.0,
-                height: 40.0,
-                decoration: new BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-              ),
+              RowBuilder(
+                  itemCount: arguments["color"].length,
+                  reversed: false,
+                  itemBuilder: (BuildContext context, int index) {
+                    Color currentColor = Colors.blue;
+                    switch (arguments["color"][index]) {
+                      case "blue":
+                        currentColor = Colors.blue;
+                        break;
+                      case "green":
+                        currentColor = Colors.green;
+                        break;
+                      case "yellow":
+                        currentColor = Colors.yellow;
+                        break;
+                      case "red":
+                        currentColor = Colors.red;
+                        break;
+                      case "black":
+                        currentColor = Colors.black;
+                        break;
+                      case "white":
+                        currentColor = Colors.white;
+                        break;
+                      default:
+                    }
+                    return Container(
+                      width: 40.0,
+                      height: 40.0,
+                      decoration: new BoxDecoration(
+                        color: currentColor,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  }),
               Expanded(child: SizedBox()),
-              Text("00.00€", style: TextStyle(fontSize: 40))
+              Row(
+                children: [
+                  Text(
+                      (arguments['price'] *
+                              (1 - (arguments["promotion"] / 100)))
+                          .toString(),
+                      style: TextStyle(fontSize: 40)),
+                  Text(discountPrice,
+                      style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: discountColor))
+                ],
+              )
             ],
           ),
         ),
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.green,
-              child: Text('S',
-                  style: TextStyle(fontSize: 30, color: Colors.white)),
-            ),
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.green,
-              child: Text('M',
-                  style: TextStyle(fontSize: 30, color: Colors.white)),
-            ),
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.green,
-              child: Text('L',
-                  style: TextStyle(fontSize: 30, color: Colors.white)),
-            ),
-          ],
-        ),
+        RowBuilder(
+            itemCount: arguments["sizes"].length,
+            reversed: false,
+            itemBuilder: (BuildContext context, int index) {
+              return CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.green,
+                  child: Text(arguments["sizes"][index],
+                      style: TextStyle(fontSize: 30, color: Colors.white)));
+            }),
         Expanded(child: SizedBox()),
         ElevatedButton(
             onPressed: () {},

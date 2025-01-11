@@ -281,13 +281,13 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[0],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Azul");
+                                    colors.add("blue");
                                     setState(() {
                                       colorCheckbox[0] = true;
                                     });
                                     print(colors);
                                   } else {
-                                    colors.removeAt(colors.indexOf("Azul"));
+                                    colors.removeAt(colors.indexOf("blue"));
                                     setState(() {
                                       colorCheckbox[0] = false;
                                     });
@@ -302,12 +302,12 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[1],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Verde");
+                                    colors.add("green");
                                     setState(() {
                                       colorCheckbox[1] = true;
                                     });
                                   } else {
-                                    colors.removeAt(colors.indexOf("Verde"));
+                                    colors.removeAt(colors.indexOf("green"));
                                     setState(() {
                                       colorCheckbox[1] = false;
                                     });
@@ -322,12 +322,12 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[2],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Amarelo");
+                                    colors.add("yellow");
                                     setState(() {
                                       colorCheckbox[2] = true;
                                     });
                                   } else {
-                                    colors.removeAt(colors.indexOf("Amarelo"));
+                                    colors.removeAt(colors.indexOf("yellow"));
                                     setState(() {
                                       colorCheckbox[2] = false;
                                     });
@@ -342,12 +342,12 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[3],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Vermelho");
+                                    colors.add("red");
                                     setState(() {
                                       colorCheckbox[3] = true;
                                     });
                                   } else {
-                                    colors.removeAt(colors.indexOf("Vermelho"));
+                                    colors.removeAt(colors.indexOf("red"));
                                     setState(() {
                                       colorCheckbox[3] = false;
                                     });
@@ -362,12 +362,12 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[4],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Preto");
+                                    colors.add("black");
                                     setState(() {
                                       colorCheckbox[4] = true;
                                     });
                                   } else {
-                                    colors.removeAt(colors.indexOf("Preto"));
+                                    colors.removeAt(colors.indexOf("black"));
 
                                     setState(() {
                                       colorCheckbox[4] = false;
@@ -383,12 +383,12 @@ class _CreationPage extends State<CreationPage> {
                                 value: colorCheckbox[5],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    colors.add("Branco");
+                                    colors.add("white");
                                     setState(() {
                                       colorCheckbox[5] = true;
                                     });
                                   } else {
-                                    colors.removeAt(colors.indexOf("Branco"));
+                                    colors.removeAt(colors.indexOf("white"));
 
                                     setState(() {
                                       colorCheckbox[5] = false;

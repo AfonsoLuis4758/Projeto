@@ -437,6 +437,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  rowbuilder:
+    dependency: "direct main"
+    description:
+      name: rowbuilder
+      sha256: "3e819a10d31a2853dd5063b7ef51ba55dc6b67c5a0ef23bdf8daa2f740014fc2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   shared_preferences:
     dependency: "direct main"
     description:

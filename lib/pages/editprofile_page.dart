@@ -179,14 +179,12 @@ class _EditProfilePage extends State<EditProfilePage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
     final String? email = prefs.getString('email');
-    //String base64Image = base64Encode(file);
     String token = futureToken!.substring(1, futureToken.length - 1);
 
     String? jsonBody;
     if (file != null) {
       String imgString = base64Encode(file);
       imgString = imgString.replaceAll("/", "-");
-      print(imgString);
       setState(() {
         jsonBody = jsonEncode({
           "image": imgString,
