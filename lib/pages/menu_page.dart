@@ -19,6 +19,14 @@ class _MenuPage extends State<MenuPage> {
   List userWishlist = [];
   List<bool> isPressed = [];
 
+  Future? future;
+
+  @override
+  void initState() {
+    future = apiCall();
+    super.initState();
+  }
+
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
@@ -79,7 +87,7 @@ class _MenuPage extends State<MenuPage> {
           ],
         ),
         body: FutureBuilder(
-            future: apiCall(),
+            future: future,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator(); // Show a loading indicator while fetching data
@@ -196,11 +204,8 @@ class _MenuPage extends State<MenuPage> {
                                       InkWell(
                                         onTap: () {
                                           setState(() {
-                                            print(isPressed);
                                             isPressed[index] =
                                                 !isPressed[index];
-
-                                            print(isPressed);
                                           });
                                         },
                                         child: Icon(
