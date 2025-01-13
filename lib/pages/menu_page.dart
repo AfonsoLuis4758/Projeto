@@ -18,6 +18,7 @@ class _MenuPage extends State<MenuPage> {
   String discountPrice = "";
   List userWishlist = [];
   List<bool> isPressed = [];
+  String role = "guest";
 
   Future? future;
 
@@ -29,11 +30,49 @@ class _MenuPage extends State<MenuPage> {
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     final String? futureToken = prefs.getString('token');
+    String Url = "http://localhost:5000/product/new";
+
+    if (arguments["gender"] == "Homem") {
+      if (arguments["type"] != null) {
+        Url = "http://localhost:5000/product/$arguments['type']?gender=Homem";
+      } else if (arguments["new"] != null) {
+        Url = "http://localhost:5000/product/new?gender=Homem";
+      } else if (arguments["promotion"] != null) {
+        Url = "http://localhost:5000/product/promotion?gender=Homem";
+      } else if (arguments["search"] != null) {
+        Url =
+            "http://localhost:5000/product/search/$arguments['search']?gender=Homem";
+      }
+    } else if (arguments["gender"] == "Mulher") {
+      if (arguments["type"] != null) {
+        Url = "http://localhost:5000/product/$arguments['type']?gender=Mulher";
+      } else if (arguments["new"] != null) {
+        Url = "http://localhost:5000/product/new?gender=Mulher";
+      } else if (arguments["promotion"] != null) {
+        Url = "http://localhost:5000/product/promotion?gender=Mulher";
+      } else if (arguments["search"] != null) {
+        Url =
+            "http://localhost:5000/product/search/$arguments['search']?gender=Mulher";
+      }
+    } else {
+      if (arguments["type"] != null) {
+        Url = "http://localhost:5000/product/$arguments['type']";
+      } else if (arguments["new"] != null) {
+        Url = "http://localhost:5000/product/new";
+      } else if (arguments["promotion"] != null) {
+        Url = "http://localhost:5000/product/promotion";
+      } else if (arguments["search"] != null) {
+        Url =
+            "http://localhost:5000/product/search/${arguments['search'].replaceAll(" ", "_")}";
+      }
+    }
 
     http.Response response;
     response = await http.get(
-      Uri.parse("http://localhost:5000/product/products"),
+      Uri.parse(Url),
       headers: {
         'Content-type': 'application/json',
       },
@@ -60,7 +99,30 @@ class _MenuPage extends State<MenuPage> {
     );
     if (response.statusCode == 200) {
       final resp = json.decode(response.body);
+      prefs.setString("role", resp["role"]);
+      prefs.setString("gender", resp["gender"]);
       return resp["wishlist"];
+    }
+  }
+
+  Future wishlistCall(wish) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
+    final String? email = prefs.getString('email');
+    String token = futureToken!.substring(1, futureToken.length - 1);
+
+    http.Response response;
+    response = await http.put(
+      Uri.parse("http://localhost:5000/user/wishlist/$email"),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"wishlist": wish}),
+    );
+    if (response.statusCode == 200) {
+      print("posted");
+      return json.decode(response.body);
     }
   }
 
@@ -167,6 +229,7 @@ class _MenuPage extends State<MenuPage> {
                                             ["promotion"],
                                         "recent": snapshot.data[index]
                                             ["recent"],
+                                        "wishlisted": isPressed[index]
                                       });
                                 },
                                 child: Card(
@@ -186,7 +249,6 @@ class _MenuPage extends State<MenuPage> {
                                             base64Decode(snapshot.data[index]
                                                     ["image"]
                                                 .replaceAll("-", "/")),
-                                            height: 200.0,
                                             fit: BoxFit.cover,
                                           )),
                                       Text(snapshot.data[index]["name"]),
@@ -202,11 +264,13 @@ class _MenuPage extends State<MenuPage> {
                                                   TextDecoration.lineThrough,
                                               color: discountColor)),
                                       InkWell(
-                                        onTap: () {
+                                        onTap: () async {
                                           setState(() {
                                             isPressed[index] =
                                                 !isPressed[index];
                                           });
+                                          await wishlistCall(
+                                              snapshot.data[index]["_id"]);
                                         },
                                         child: Icon(
                                           Icons.favorite,

@@ -15,8 +15,22 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPage extends State<SearchPage> {
   List<dynamic> data = []; //to receive from api latter
-
   List<dynamic> searchResults = [];
+  bool? button;
+  String? gender;
+  String? type;
+
+  @override
+  void initState() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    gender = prefs.getString("gender");
+    if (gender == "Mulher") {
+      button = true;
+    } else if (gender == "Homem") {
+      button = false;
+    }
+    super.initState();
+  }
 
   final controller = TextEditingController();
   Widget listview = _mainListView();
@@ -113,11 +127,17 @@ class _SearchPage extends State<SearchPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                  child:
-                      ElevatedButton(onPressed: () {}, child: Text("Homem"))),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        button = false;
+                      },
+                      child: Text("Homem"))),
               Expanded(
-                  child:
-                      ElevatedButton(onPressed: () {}, child: Text("Mulher"))),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        button = true;
+                      },
+                      child: Text("Mulher"))),
             ],
           ),
           Container(
@@ -126,7 +146,8 @@ class _SearchPage extends State<SearchPage> {
               onChanged: onQueryChanged,
               onSubmitted: (query) async {
                 await sendToApi(query);
-                data.insert(0, query);
+                Navigator.pushNamed(context, "/itempage",
+                    arguments: {"gender": gender, "search": query});
               },
               controller: controller,
               decoration: const InputDecoration(

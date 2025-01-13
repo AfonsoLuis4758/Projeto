@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rowbuilder/rowbuilder.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class ItemPage extends StatefulWidget {
@@ -8,12 +10,55 @@ class ItemPage extends StatefulWidget {
   State<ItemPage> createState() => _ItemPage();
 }
 
+Future wishlistCall(wish) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? futureToken = prefs.getString('token');
+  final String? email = prefs.getString('email');
+  String token = futureToken!.substring(1, futureToken.length - 1);
+
+  http.Response response;
+  response = await http.put(
+    Uri.parse("http://localhost:5000/user/wishlist/$email"),
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({"wishlist": wish}),
+  );
+  if (response.statusCode == 200) {
+    print("posted");
+    return json.decode(response.body);
+  }
+}
+
+Future cartCall(item) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String? futureToken = prefs.getString('token');
+  final String? email = prefs.getString('email');
+  String token = futureToken!.substring(1, futureToken.length - 1);
+
+  http.Response response;
+  response = await http.put(
+    Uri.parse("http://localhost:5000/user/cart/$email"),
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({"cart": item}),
+  );
+  if (response.statusCode == 200) {
+    print("posted");
+    return json.decode(response.body);
+  }
+}
+
 class _ItemPage extends State<ItemPage> {
   @override
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     Color discountColor = Colors.white;
+    bool isPressed = arguments["wishlisted"];
     String discountPrice = "";
     if (arguments["promotion"] != 0) {
       discountColor = Colors.black;
@@ -52,10 +97,17 @@ class _ItemPage extends State<ItemPage> {
             children: [
               Text(arguments['name'], style: TextStyle(fontSize: 30)),
               Expanded(child: SizedBox()),
-              Icon(
-                Icons.favorite,
-                color: Colors.green,
-              )
+              InkWell(
+                  onTap: () async {
+                    setState(() {
+                      isPressed = !isPressed;
+                    });
+                    await wishlistCall(arguments["id"]);
+                  },
+                  child: Icon(
+                    Icons.favorite,
+                    color: isPressed ? Colors.red : Colors.green,
+                  ))
             ],
           ),
         ),
@@ -127,9 +179,12 @@ class _ItemPage extends State<ItemPage> {
             }),
         Expanded(child: SizedBox()),
         ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              await cartCall(arguments["id"]);
+              await wishlistCall(arguments["id"]);
+            },
             child: const Text(
-              "Comprar",
+              "Adicionar ao carrinho",
               style: TextStyle(fontSize: 24),
             )),
       ]),

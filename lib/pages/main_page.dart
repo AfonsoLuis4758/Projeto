@@ -43,7 +43,7 @@ class _MainPage extends State<MainPage> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.search, color: Colors.white),
-              label: "SEARCH",
+              label: "PESQUISA",
               activeIcon: Icon(
                 Icons.search_outlined,
                 color: Colors.white,
@@ -55,7 +55,7 @@ class _MainPage extends State<MainPage> {
                 activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
-                label: "CART",
+                label: "CESTO",
                 activeIcon:
                     Icon(Icons.shopping_cart_outlined, color: Colors.white)),
           ],
