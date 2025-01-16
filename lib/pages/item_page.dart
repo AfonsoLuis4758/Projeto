@@ -99,10 +99,10 @@ class _ItemPage extends State<ItemPage> {
               Expanded(child: SizedBox()),
               InkWell(
                   onTap: () async {
+                    await wishlistCall(arguments["id"]);
                     setState(() {
                       isPressed = !isPressed;
                     });
-                    await wishlistCall(arguments["id"]);
                   },
                   child: Icon(
                     Icons.favorite,
@@ -154,9 +154,8 @@ class _ItemPage extends State<ItemPage> {
               Row(
                 children: [
                   Text(
-                      (arguments['price'] *
-                              (1 - (arguments["promotion"] / 100)))
-                          .toString(),
+                      (arguments['price'] * (1 - arguments["promotion"] / 100))
+                          .toStringAsFixed(2),
                       style: TextStyle(fontSize: 40)),
                   Text(discountPrice,
                       style: TextStyle(
@@ -188,6 +187,26 @@ class _ItemPage extends State<ItemPage> {
               style: TextStyle(fontSize: 24),
             )),
       ]),
+      floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.yellow,
+        onPressed: () {
+          Navigator.pushNamed(context, "/editproductpage", arguments: {
+            "id": arguments["id"],
+            "image": arguments["image"],
+            "name": arguments["name"],
+            "gender": arguments["gender"],
+            "type": arguments["type"],
+            "stock": arguments["stock"],
+            "price": arguments["price"],
+            "color": arguments["color"],
+            "sizes": arguments["sizes"],
+            "promotion": arguments["promotion"],
+            "recent": arguments["recent"],
+          });
+        },
+        child: const Icon(Icons.edit),
+      ),
     );
   }
 }

@@ -17,27 +17,135 @@ class _SearchPage extends State<SearchPage> {
   List<dynamic> data = []; //to receive from api latter
   List<dynamic> searchResults = [];
   bool button = false;
-  String? gender = "Homem";
   String? type;
+  String gender = "Homem";
   Widget listview = Container();
 
   @override
-  void initState() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString("gender") != null) {
-      gender = prefs.getString("gender");
-    }
-    if (gender == "Mulher") {
-      button = true;
-    } else if (gender == "Homem") {
-      button = false;
-    }
-    listview = _mainListView(context, gender);
+  void initState() {
+    listview = Expanded(
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "promotion"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Promoções')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "new"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Novidades')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "Calças"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Calças')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "T-shirt"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('T-shirts')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "Sweatshirt"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Sweatshirts')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "Casaco"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Casacos')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, "/menupage",
+                  arguments: {"gender": gender, "type": "Calçado"});
+            },
+            child: Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(child: Text('Calçado')),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
     super.initState();
   }
 
   final controller = TextEditingController();
   int flag = 0;
+
+  /*Future getSharedPrefs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    gender = prefs.getString("gender");
+    return gender;
+  } */
 
   void onQueryChanged(String query) {
     setState(() {
@@ -82,7 +190,6 @@ class _SearchPage extends State<SearchPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
     final String? email = prefs.getString('email');
-    //String base64Image = base64Encode(file);
     String token = futureToken!.substring(1, futureToken.length - 1);
 
     http.Response response;
@@ -105,189 +212,77 @@ class _SearchPage extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text(
-          "LusoVest",
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.account_circle_outlined,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, "/unloggedpage");
-            },
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              button ? Colors.green : Colors.lightGreen,
-                          foregroundColor: Colors.white),
-                      onPressed: () {
-                        button = false;
-                      },
-                      child: Text("Homem"))),
-              Expanded(
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              button ? Colors.lightGreen : Colors.green,
-                          foregroundColor: Colors.white),
-                      onPressed: () {
-                        button = true;
-                      },
-                      child: Text("Mulher"))),
-            ],
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          title: const Text(
+            "LusoVest",
+            style: TextStyle(color: Colors.white),
           ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              onChanged: onQueryChanged,
-              onSubmitted: (query) async {
-                await sendToApi(query);
-                Navigator.pushNamed(context, "/itempage",
-                    arguments: {"gender": gender, "search": query});
+          iconTheme: const IconThemeData(color: Colors.white),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.account_circle_outlined,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, "/unloggedpage");
               },
-              controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'Search',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                button ? Colors.white : Colors.green[700]),
+                        onPressed: () {
+                          setState(() {
+                            gender = "Homem";
+                            button = false;
+                          });
+                        },
+                        child: Text("Homem"))),
+                Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                button ? Colors.green[700] : Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            gender = "Mulher";
+                            button = true;
+                          });
+                        },
+                        child: Text("Mulher"))),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                onChanged: onQueryChanged,
+                onSubmitted: (query) async {
+                  await sendToApi(query);
+                  Navigator.pushNamed(context, "/menupage",
+                      arguments: {"gender": gender, "type": "search/$query"});
+                },
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Search',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.search),
+                ),
               ),
             ),
-          ),
-          listview
-        ],
-      ),
-    );
+            listview
+          ],
+        ));
   }
-}
-
-Widget _mainListView(context, gender) {
-  return Expanded(
-    child: ListView(
-      padding: const EdgeInsets.all(16),
-      children: <Widget>[
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "promotion": true});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Promoções')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "new": true});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Novidades')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "type": "Calças"});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Calças')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "type": "T-shirt"});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('T-shirts')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "type": "Sweatshirt"});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Sweatshirts')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "type": "Casaco"});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Casacos')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, "/itempage",
-                arguments: {"gender": gender, "type": "Calçado"});
-          },
-          child: Container(
-            height: 50,
-            child: Row(
-              children: [
-                Expanded(child: Text('Calçado')),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 Widget _searchListView(searchResults, gender) {
@@ -298,9 +293,9 @@ Widget _searchListView(searchResults, gender) {
         return ListTile(
           title: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, "/itempage", arguments: {
+                Navigator.pushNamed(context, "/menupage", arguments: {
                   "gender": gender,
-                  "search": searchResults[index]
+                  "type": "search/${searchResults[index]}"
                 });
               },
               child: Text(searchResults[index])),

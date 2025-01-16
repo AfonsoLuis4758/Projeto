@@ -51,7 +51,7 @@ class _MainPage extends State<MainPage> {
             ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.menu, color: Colors.white),
-                label: "MENU",
+                label: "PRODUTOS",
                 activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),

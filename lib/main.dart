@@ -1,8 +1,10 @@
 import 'package:project/pages/create_account.dart';
 import 'package:project/pages/editprofile_page.dart';
+import 'package:project/pages/editproduct_page.dart';
 import 'package:project/pages/login_page.dart';
 import 'package:project/pages/profile_page.dart';
 import 'package:project/pages/main_page.dart';
+import 'package:project/pages/menu_page.dart';
 import 'package:project/pages/unlogged_page.dart';
 import 'package:project/pages/creation_page.dart';
 import 'package:project/pages/item_page.dart';
@@ -25,7 +27,9 @@ class MyApp extends StatelessWidget {
         "/unloggedpage": (context) => const UnloggedPage(),
         "/creationpage": (context) => const CreationPage(),
         "/profilepage": (context) => const ProfilePage(),
+        "/editproductpage": (context) => const EditProductPage(),
         "/editprofilepage": (context) => const EditProfilePage(),
+        "/menupage": (context) => const MenuPage(),
         "/itempage": (context) => const ItemPage(),
       },
     );

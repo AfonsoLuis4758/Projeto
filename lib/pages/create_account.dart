@@ -145,13 +145,14 @@ class _CreateAccount extends State<CreateAccount> {
                   ),
                   onPressed: () async {
                     // to use gps, only works on phone
+                    setState(() {
+                      addressController.text = "...";
+                    });
                     final position = await _determinePosition();
-                    print(position);
                     List<Placemark> placemarks = await placemarkFromCoordinates(
                         position.latitude, position.longitude);
                     setState(() {
-                      String localidade =
-                          "${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}, , ${placemarks[0].country}";
+                      String localidade = placemarks[0].toString();
                       addressController.text = localidade;
                     });
                   },

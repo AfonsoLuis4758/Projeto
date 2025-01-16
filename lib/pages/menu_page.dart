@@ -15,10 +15,11 @@ class _MenuPage extends State<MenuPage> {
   IconData gridType = Icons.grid_3x3;
   int cardCount = 2;
   Color discountColor = Colors.green;
-  String discountPrice = "";
+  List discountPrice = [];
   List userWishlist = [];
   List<bool> isPressed = [];
   String role = "guest";
+  String category = "Todos";
 
   Future? future;
 
@@ -33,41 +34,31 @@ class _MenuPage extends State<MenuPage> {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     final String? futureToken = prefs.getString('token');
-    String Url = "http://localhost:5000/product/new";
+    String Url = "http://localhost:5000/product/products";
 
     if (arguments["gender"] == "Homem") {
-      if (arguments["type"] != null) {
-        Url = "http://localhost:5000/product/$arguments['type']?gender=Homem";
-      } else if (arguments["new"] != null) {
-        Url = "http://localhost:5000/product/new?gender=Homem";
-      } else if (arguments["promotion"] != null) {
-        Url = "http://localhost:5000/product/promotion?gender=Homem";
-      } else if (arguments["search"] != null) {
-        Url =
-            "http://localhost:5000/product/search/$arguments['search']?gender=Homem";
-      }
+      final type = arguments['type'];
+      Url = "http://localhost:5000/product/$type?gender='Homem'";
+      setState(() {
+        final split = type.split('/');
+        final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
+        category = values[0];
+      });
     } else if (arguments["gender"] == "Mulher") {
-      if (arguments["type"] != null) {
-        Url = "http://localhost:5000/product/$arguments['type']?gender=Mulher";
-      } else if (arguments["new"] != null) {
-        Url = "http://localhost:5000/product/new?gender=Mulher";
-      } else if (arguments["promotion"] != null) {
-        Url = "http://localhost:5000/product/promotion?gender=Mulher";
-      } else if (arguments["search"] != null) {
-        Url =
-            "http://localhost:5000/product/search/$arguments['search']?gender=Mulher";
-      }
-    } else {
-      if (arguments["type"] != null) {
-        Url = "http://localhost:5000/product/$arguments['type']";
-      } else if (arguments["new"] != null) {
-        Url = "http://localhost:5000/product/new";
-      } else if (arguments["promotion"] != null) {
-        Url = "http://localhost:5000/product/promotion";
-      } else if (arguments["search"] != null) {
-        Url =
-            "http://localhost:5000/product/search/${arguments['search'].replaceAll(" ", "_")}";
-      }
+      final type = arguments['type'];
+
+      setState(() {
+        final split = type.split('/');
+        final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
+        category = values[0];
+      });
+      Url = "http://localhost:5000/product/$type?gender=Mulher";
+    } else if (arguments["type"] != null) {
+      final type = arguments['type'];
+      final split = type.split('/');
+      final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
+      category = values[0];
+      Url = "http://localhost:5000/product/$type";
     }
 
     http.Response response;
@@ -100,7 +91,6 @@ class _MenuPage extends State<MenuPage> {
     if (response.statusCode == 200) {
       final resp = json.decode(response.body);
       prefs.setString("role", resp["role"]);
-      prefs.setString("gender", resp["gender"]);
       return resp["wishlist"];
     }
   }
@@ -161,6 +151,10 @@ class _MenuPage extends State<MenuPage> {
                   body: Column(children: [
                     Row(
                       children: [
+                        Text(
+                          category,
+                          style: TextStyle(fontSize: 32),
+                        ),
                         Expanded(
                           child: ElevatedButton(
                               onPressed: () {},
@@ -198,8 +192,10 @@ class _MenuPage extends State<MenuPage> {
                           itemBuilder: (BuildContext context, int index) {
                             if (snapshot.data[index]["promotion"] != 0) {
                               discountColor = Colors.black;
-                              discountPrice =
-                                  snapshot.data[index]["price"].toString();
+                              discountPrice.add(
+                                  snapshot.data[index]["price"].toString());
+                            } else {
+                              discountPrice.add("");
                             }
                             if (userWishlist
                                 .contains(snapshot.data[index]["_id"])) {
@@ -257,8 +253,8 @@ class _MenuPage extends State<MenuPage> {
                                                   (snapshot.data[index]
                                                           ["promotion"] /
                                                       100)))
-                                          .toString()),
-                                      Text((discountPrice),
+                                          .toStringAsFixed(2)),
+                                      Text((discountPrice[index]),
                                           style: TextStyle(
                                               decoration:
                                                   TextDecoration.lineThrough,

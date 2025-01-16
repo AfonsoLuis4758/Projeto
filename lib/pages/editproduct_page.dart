@@ -5,13 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
-class CreationPage extends StatefulWidget {
-  const CreationPage({super.key});
+class EditProductPage extends StatefulWidget {
+  const EditProductPage({super.key});
   @override
-  State<CreationPage> createState() => _CreationPage();
+  State<EditProductPage> createState() => _EditProductPage();
 }
 
-class _CreationPage extends State<CreationPage> {
+class _EditProductPage extends State<EditProductPage> {
   List<int>? imgForApi;
   String source = "";
   String name = '';
@@ -19,6 +19,7 @@ class _CreationPage extends State<CreationPage> {
   String gender = '';
   String price = "";
   String stock = "";
+  String promotion = "";
   bool recent = true;
   List colorCheckbox = [false, false, false, false, false, false];
   List sizeCheckbox = [false, false, false, false];
@@ -30,6 +31,7 @@ class _CreationPage extends State<CreationPage> {
   final genderController = TextEditingController();
   final priceController = TextEditingController();
   final stockController = TextEditingController();
+  final promotionController = TextEditingController();
 
   Future<String?> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,25 +39,20 @@ class _CreationPage extends State<CreationPage> {
     return token;
   }
 
-  Future apiCall(
-      name, type, stock, gender, price, colors, sizes, recent, file) async {
+  Future apiCall(name, type, stock, gender, price, colors, sizes, recent,
+      promotion, file, id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
     //String base64Image = base64Encode(file);
     String token = futureToken!.substring(1, futureToken.length - 1);
     print(token);
 
-    String imgString = base64Encode(file);
-    imgString = imgString.replaceAll("/", "-");
+    String? jsonBody;
 
-    http.Response response;
-    response = await http.post(
-      Uri.parse("http://localhost:5000/product"),
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
+    if (file != null) {
+      String imgString = base64Encode(file);
+      imgString = imgString.replaceAll("/", "-");
+      jsonBody = jsonEncode({
         "name": name,
         "type": type,
         "stock": stock,
@@ -64,8 +61,30 @@ class _CreationPage extends State<CreationPage> {
         "color": colors,
         "sizes": sizes,
         "recent": recent,
+        "promotion": promotion,
         "image": imgString
-      }),
+      });
+    } else {
+      jsonBody = jsonEncode({
+        "name": name,
+        "type": type,
+        "stock": stock,
+        "gender": gender,
+        "price": price,
+        "color": colors,
+        "sizes": sizes,
+        "recent": recent,
+        "promotion": promotion,
+      });
+    }
+    http.Response response;
+    response = await http.put(
+      Uri.parse("http://localhost:5000/product/$id"),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonBody,
     );
 
     if (response.statusCode == 200) {
@@ -95,6 +114,19 @@ class _CreationPage extends State<CreationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
+
+    setState(() {
+      nameController.text = arguments["name"];
+      typeController.text = arguments["type"];
+      genderController.text = arguments["gender"];
+      priceController.text = arguments["price"].toString();
+      stockController.text = arguments["stock"].toString();
+      promotionController.text = arguments["promotion"].toString();
+      recent = arguments["recent"];
+    });
+
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
@@ -414,6 +446,17 @@ class _CreationPage extends State<CreationPage> {
             ),
           ),
           Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: TextField(
+              controller: promotionController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Introduza a promoção do produto',
+              ),
+            ),
+          ),
+          Padding(
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
               child: Row(
                 children: [
@@ -442,9 +485,20 @@ class _CreationPage extends State<CreationPage> {
                   gender = genderController.text;
                   stock = stockController.text;
                   price = priceController.text;
+                  promotion = promotionController.text;
 
-                  apiCall(name, type, double.parse(stock), gender,
-                      double.parse(price), colors, sizes, recent, imgForApi);
+                  apiCall(
+                      name,
+                      type,
+                      double.parse(stock),
+                      gender,
+                      double.parse(price),
+                      colors,
+                      sizes,
+                      recent,
+                      double.parse(promotion),
+                      imgForApi,
+                      arguments["id"]);
                 });
               },
               child: const Text(
