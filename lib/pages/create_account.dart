@@ -17,11 +17,14 @@ class _CreateAccount extends State<CreateAccount> {
   String gender = '';
   String address = '';
   String token = "";
+  List<String> genders = ["Homem", "Mulher"];
+  List<String> gendersforApi = ["male", "female"];
+  String genderValue = "Homem";
+
   bool _passwordVisible = false;
   final userController = TextEditingController();
   final passController = TextEditingController();
   final addressController = TextEditingController();
-  final genderController = TextEditingController();
   final emailController = TextEditingController();
 
   /// Determine the current position of the device.
@@ -120,13 +123,28 @@ class _CreateAccount extends State<CreateAccount> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-            child: TextField(
-              controller: genderController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Enter your gender',
+            child: DropdownButton<String>(
+              value: genderValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
               ),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  genderValue = value!;
+                  gender = gendersforApi[genders.indexOf(genderValue)];
+                });
+              },
+              items: genders.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
           ),
           Padding(
@@ -193,7 +211,6 @@ class _CreateAccount extends State<CreateAccount> {
                       userName = userController.text;
                       passWord = passController.text;
                       email = emailController.text;
-                      gender = genderController.text;
                       address = addressController.text;
                       apiCall(userName, passWord, email, address, gender);
                     });

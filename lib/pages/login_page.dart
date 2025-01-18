@@ -90,6 +90,7 @@ class _LoginPage extends State<LoginPage> {
                       email = emailController.text;
                       passWord = passController.text;
                       apiCall(email, passWord);
+                      Navigator.pushNamed(context, "/mainpage");
                     });
                   },
                   child: const Text(
@@ -117,19 +118,6 @@ class _LoginPage extends State<LoginPage> {
                   )),
             ),
           ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, "/mainpage");
-            },
-            child: Card(
-              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                ListTile(
-                  leading: const Icon(Icons.account_circle_rounded),
-                  title: Text("Token = $token"),
-                ),
-              ]),
-            ),
-          )
         ],
       ),
     );

@@ -18,8 +18,36 @@ class _MenuPage extends State<MenuPage> {
   List discountPrice = [];
   List userWishlist = [];
   List<bool> isPressed = [];
+  bool visibility = false;
   String role = "guest";
+  List sizes = ["XS", "S", "M", "L", "XL"];
   String category = "Todos";
+  List<String> genders = ["Homem", "Mulher"];
+  List<String> gendersfromApi = ["male", "female"];
+  List<String> types = [
+    "Calças",
+    "T-shirts",
+    "Sweatshirts",
+    "Casacos",
+    "Calçado",
+    "Promoção",
+    "Novidade",
+    "Pesquisa"
+  ];
+  List<String> typesfromApi = [
+    "pants",
+    "shirts",
+    "sweatshirts",
+    "jackets",
+    "shoes",
+    "promotion",
+    "new",
+    "search"
+  ];
+
+  double max = 120;
+  List sizeCheckbox = [true, true, true, true, true];
+  double _currentSliderValue = 120; //for filters
 
   Future? future;
 
@@ -29,6 +57,153 @@ class _MenuPage extends State<MenuPage> {
     super.initState();
   }
 
+  void filterPop() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Filtros'),
+            content: StatefulBuilder(
+              builder: (context, state) {
+                return SingleChildScrollView(
+                    child: Column(children: [
+                  Slider(
+                    value: _currentSliderValue,
+                    max: 120,
+                    divisions: 12,
+                    label: _currentSliderValue.round().toString(),
+                    onChanged: (double value) {
+                      setState(() {
+                        _currentSliderValue = value;
+                      });
+                    },
+                  ),
+                  Column(children: [
+                    const Text("Tamanhos"),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: sizeCheckbox[0],
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      sizes.add("XS");
+                                      setState(() {
+                                        sizeCheckbox[0] = true;
+                                      });
+                                    } else {
+                                      sizes.removeAt(sizes.indexOf("XS"));
+                                      setState(() {
+                                        sizeCheckbox[0] = false;
+                                      });
+                                    }
+                                  }),
+                              const Text("XS (34)")
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: sizeCheckbox[1],
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      sizes.add("S");
+                                      setState(() {
+                                        sizeCheckbox[1] = true;
+                                      });
+                                    } else {
+                                      sizes.removeAt(sizes.indexOf("S"));
+                                      setState(() {
+                                        sizeCheckbox[1] = false;
+                                      });
+                                    }
+                                  }),
+                              const Text("S (36)")
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: sizeCheckbox[2],
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      sizes.add("M");
+                                      setState(() {
+                                        sizeCheckbox[2] = true;
+                                      });
+                                    } else {
+                                      sizes.removeAt(sizes.indexOf("M"));
+                                      setState(() {
+                                        sizeCheckbox[2] = false;
+                                      });
+                                    }
+                                  }),
+                              const Text("M (38)")
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: sizeCheckbox[3],
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      sizes.add("L");
+                                      setState(() {
+                                        sizeCheckbox[3] = true;
+                                      });
+                                    } else {
+                                      sizes.removeAt(sizes.indexOf("L"));
+                                      setState(() {
+                                        sizeCheckbox[3] = false;
+                                      });
+                                    }
+                                  }),
+                              const Text("L (40)")
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                  value: sizeCheckbox[4],
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      sizes.add("XL");
+                                      setState(() {
+                                        sizeCheckbox[4] = true;
+                                      });
+                                    } else {
+                                      sizes.removeAt(sizes.indexOf("XL"));
+                                      setState(() {
+                                        sizeCheckbox[4] = false;
+                                      });
+                                    }
+                                  }),
+                              const Text("XL (42)")
+                            ],
+                          )
+                        ])
+                  ])
+                ]));
+              },
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text('Filtrar'),
+                onPressed: () {
+                  setState(() {
+                    max = _currentSliderValue;
+                    future = apiCall();
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
@@ -36,31 +211,17 @@ class _MenuPage extends State<MenuPage> {
     final String? futureToken = prefs.getString('token');
     String Url = "http://localhost:5000/product/products";
 
-    if (arguments["gender"] == "Homem") {
+    if (arguments["gender"] != null) {
       final type = arguments['type'];
-      Url = "http://localhost:5000/product/$type?gender='Homem'";
+      final gender = arguments['gender'];
+      Url = "http://localhost:5000/product/$type?gender=$gender";
       setState(() {
         final split = type.split('/');
         final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
-        category = values[0];
+        category = types[typesfromApi.indexOf(values[0])];
       });
-    } else if (arguments["gender"] == "Mulher") {
-      final type = arguments['type'];
-
-      setState(() {
-        final split = type.split('/');
-        final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
-        category = values[0];
-      });
-      Url = "http://localhost:5000/product/$type?gender=Mulher";
-    } else if (arguments["type"] != null) {
-      final type = arguments['type'];
-      final split = type.split('/');
-      final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
-      category = values[0];
-      Url = "http://localhost:5000/product/$type";
     }
-
+    print(Url);
     http.Response response;
     response = await http.get(
       Uri.parse(Url),
@@ -91,6 +252,9 @@ class _MenuPage extends State<MenuPage> {
     if (response.statusCode == 200) {
       final resp = json.decode(response.body);
       prefs.setString("role", resp["role"]);
+      setState(() {
+        visibility = true;
+      });
       return resp["wishlist"];
     }
   }
@@ -157,7 +321,9 @@ class _MenuPage extends State<MenuPage> {
                         ),
                         Expanded(
                           child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                filterPop();
+                              },
                               child: const Icon(
                                 Icons.filter_alt_outlined,
                                 color: Colors.black,
@@ -183,114 +349,146 @@ class _MenuPage extends State<MenuPage> {
                     ),
                     Expanded(
                       child: GridView.builder(
+                          itemCount: snapshot.data.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: (1 / 1.5),
                             crossAxisCount: cardCount,
                           ),
-                          itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext context, int index) {
-                            if (snapshot.data[index]["promotion"] != 0) {
-                              discountColor = Colors.black;
-                              discountPrice.add(
-                                  snapshot.data[index]["price"].toString());
-                            } else {
-                              discountPrice.add("");
-                            }
-                            if (userWishlist
-                                .contains(snapshot.data[index]["_id"])) {
-                              isPressed.add(true);
-                            } else {
-                              isPressed.add(false);
-                            }
+                            if (snapshot.data[index] != null) {
+                              final firstSet =
+                                  snapshot.data[index]["sizes"].toSet();
+                              final secondSet = sizes.toSet();
+                              final intersection =
+                                  firstSet.intersection(secondSet);
+                              if (snapshot.data[index]["price"] *
+                                          (1 -
+                                              (snapshot.data[index]
+                                                      ["promotion"] /
+                                                  100)) >
+                                      max ||
+                                  !intersection.isNotEmpty) {
+                                snapshot.data.removeAt(index);
+                                snapshot.data.add(null);
+                              }
 
-                            return Center(
+                              if (snapshot.data[index]["promotion"] != 0) {
+                                discountColor = Colors.black;
+                                discountPrice.add(
+                                    snapshot.data[index]["price"].toString());
+                              } else {
+                                discountPrice.add("");
+                              }
+                              if (userWishlist
+                                  .contains(snapshot.data[index]["_id"])) {
+                                isPressed.add(true);
+                              } else {
+                                isPressed.add(false);
+                              }
+                              return Center(
                                 child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/itempage",
-                                      arguments: {
-                                        "id": snapshot.data[index]["_id"],
-                                        "image": snapshot.data[index]["image"],
-                                        "name": snapshot.data[index]["name"],
-                                        "gender": snapshot.data[index]
-                                            ["gender"],
-                                        "type": snapshot.data[index]["type"],
-                                        "stock": snapshot.data[index]["stock"],
-                                        "price": snapshot.data[index]["price"],
-                                        "color": snapshot.data[index]["color"],
-                                        "sizes": snapshot.data[index]["sizes"],
-                                        "promotion": snapshot.data[index]
-                                            ["promotion"],
-                                        "recent": snapshot.data[index]
-                                            ["recent"],
-                                        "wishlisted": isPressed[index]
-                                      });
-                                },
-                                child: Card(
-                                  margin: EdgeInsets.zero,
-                                  color: Colors.green,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  elevation: 5,
-                                  child: Column(
-                                    children: [
-                                      Hero(
-                                          tag: "herotag" +
-                                              snapshot.data[index]["_id"],
-                                          child: Image.memory(
-                                            base64Decode(snapshot.data[index]
-                                                    ["image"]
-                                                .replaceAll("-", "/")),
-                                            fit: BoxFit.cover,
-                                          )),
-                                      Text(snapshot.data[index]["name"]),
-                                      Text((snapshot.data[index]["price"] *
-                                              (1 -
-                                                  (snapshot.data[index]
-                                                          ["promotion"] /
-                                                      100)))
-                                          .toStringAsFixed(2)),
-                                      Text((discountPrice[index]),
-                                          style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: discountColor)),
-                                      InkWell(
-                                        onTap: () async {
-                                          setState(() {
-                                            isPressed[index] =
-                                                !isPressed[index];
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, "/itempage",
+                                          arguments: {
+                                            "id": snapshot.data[index]["_id"],
+                                            "image": snapshot.data[index]
+                                                ["image"],
+                                            "name": snapshot.data[index]
+                                                ["name"],
+                                            "gender": snapshot.data[index]
+                                                ["gender"],
+                                            "type": snapshot.data[index]
+                                                ["type"],
+                                            "stock": snapshot.data[index]
+                                                ["stock"],
+                                            "price": snapshot.data[index]
+                                                ["price"],
+                                            "color": snapshot.data[index]
+                                                ["color"],
+                                            "sizes": snapshot.data[index]
+                                                ["sizes"],
+                                            "promotion": snapshot.data[index]
+                                                ["promotion"],
+                                            "recent": snapshot.data[index]
+                                                ["recent"],
+                                            "wishlisted": isPressed[index]
                                           });
-                                          await wishlistCall(
-                                              snapshot.data[index]["_id"]);
-                                        },
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: isPressed[index]
-                                              ? Colors.red
-                                              : Colors.white,
-                                          size: 24.0,
-                                        ),
+                                    },
+                                    child: Card(
+                                      margin: EdgeInsets.zero,
+                                      color: Colors.green,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
                                       ),
-                                    ],
+                                      elevation: 5,
+                                      child: Column(
+                                        children: [
+                                          Hero(
+                                              tag: "herotag" +
+                                                  snapshot.data[index]["_id"],
+                                              child: Image.memory(
+                                                base64Decode(snapshot
+                                                    .data[index]["image"]
+                                                    .replaceAll("-", "/")),
+                                                fit: BoxFit.cover,
+                                                height: 200,
+                                              )),
+                                          Text(snapshot.data[index]["name"]),
+                                          Text((snapshot.data[index]["price"] *
+                                                  (1 -
+                                                      (snapshot.data[index]
+                                                              ["promotion"] /
+                                                          100)))
+                                              .toStringAsFixed(2)),
+                                          Text((discountPrice[index]),
+                                              style: TextStyle(
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: discountColor)),
+                                          InkWell(
+                                            onTap: () async {
+                                              setState(() {
+                                                isPressed[index] =
+                                                    !isPressed[index];
+                                              });
+                                              await wishlistCall(
+                                                  snapshot.data[index]["_id"]);
+                                            },
+                                            child: Icon(
+                                              Icons.favorite,
+                                              color: isPressed[index]
+                                                  ? Colors.red
+                                                  : Colors.white,
+                                              size: 24.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ));
+                              );
+                            } else {
+                              return Container();
+                            }
                           }),
                     ),
                   ]),
-                  floatingActionButton: FloatingActionButton(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/creationpage");
-                    },
-                    child: const Icon(Icons.add),
+                  floatingActionButton: Visibility(
+                    visible: visibility,
+                    child: FloatingActionButton(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.green,
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/creationpage");
+                      },
+                      child: const Icon(Icons.add),
+                    ),
                   ),
                 );
               }

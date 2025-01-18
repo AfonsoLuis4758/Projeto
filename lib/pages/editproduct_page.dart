@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
@@ -17,21 +18,78 @@ class _EditProductPage extends State<EditProductPage> {
   String name = '';
   String type = '';
   String gender = '';
+  List<String> genders = ["Homem", "Mulher"];
+  List<String> gendersfromApi = ["male", "female"];
+  List<String> types = [
+    "Calças",
+    "T-shirts",
+    "Sweatshirts",
+    "Casacos",
+    "Calçado"
+  ];
+  List<String> typesfromApi = [
+    "pants",
+    "shirts",
+    "sweatshirts",
+    "jackets",
+    "shoes"
+  ];
   String price = "";
   String stock = "";
   String promotion = "";
   bool recent = true;
   List colorCheckbox = [false, false, false, false, false, false];
-  List sizeCheckbox = [false, false, false, false];
-  List colors = [];
+  List sizeCheckbox = [false, false, false, false, false];
   List sizes = [];
 
   final nameController = TextEditingController();
-  final typeController = TextEditingController();
-  final genderController = TextEditingController();
   final priceController = TextEditingController();
   final stockController = TextEditingController();
   final promotionController = TextEditingController();
+
+  late final arguments = (ModalRoute.of(context)?.settings.arguments ??
+      <String, dynamic>{}) as Map;
+
+  String typeValue = "Calças";
+  String genderValue = "Homem";
+
+  setValues() {
+    typeValue = typesfromApi[types.indexOf(arguments["type"])];
+    genderValue = typesfromApi[types.indexOf(arguments["gender"])];
+  }
+
+  List<Color> ApiColors = [];
+  List<Color> currentColors = [];
+
+// ValueChanged<Color> callback
+  void changeColors(List<Color> colors) {
+    setState(() => currentColors = colors);
+  }
+
+  void ColorPicker() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Pick a color!'),
+            content: SingleChildScrollView(
+              child: MultipleChoiceBlockPicker(
+                pickerColors: currentColors,
+                onColorsChanged: changeColors,
+              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text('Got it'),
+                onPressed: () {
+                  setState(() => ApiColors = currentColors);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
 
   Future<String?> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,7 +103,6 @@ class _EditProductPage extends State<EditProductPage> {
     final String? futureToken = prefs.getString('token');
     //String base64Image = base64Encode(file);
     String token = futureToken!.substring(1, futureToken.length - 1);
-    print(token);
 
     String? jsonBody;
 
@@ -94,6 +151,28 @@ class _EditProductPage extends State<EditProductPage> {
     }
   }
 
+  Future deleteCall(id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
+    //String base64Image = base64Encode(file);
+    String token = futureToken!.substring(1, futureToken.length - 1);
+
+    http.Response response;
+    response = await http.delete(
+      Uri.parse("http://localhost:5000/product/$id"),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("posted");
+    } else {
+      print("error");
+    }
+  }
+
   void takeSnapshot(source) async {
     final ImagePicker picker = ImagePicker();
     if (source == "camera") {
@@ -114,13 +193,8 @@ class _EditProductPage extends State<EditProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ??
-        <String, dynamic>{}) as Map;
-
     setState(() {
       nameController.text = arguments["name"];
-      typeController.text = arguments["type"];
-      genderController.text = arguments["gender"];
       priceController.text = arguments["price"].toString();
       stockController.text = arguments["stock"].toString();
       promotionController.text = arguments["promotion"].toString();
@@ -177,24 +251,54 @@ class _EditProductPage extends State<EditProductPage> {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: TextField(
-              controller: typeController,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Introduza o tipo de produto',
+            child: DropdownButton<String>(
+              value: typeValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
               ),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  typeValue = value!;
+                  type = typesfromApi[types.indexOf(typeValue)];
+                });
+              },
+              items: types.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: TextField(
-              controller: genderController,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Introduza o genero de produto',
+            child: DropdownButton<String>(
+              value: genderValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
               ),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  genderValue = value!;
+                  gender = gendersfromApi[genders.indexOf(genderValue)];
+                });
+              },
+              items: genders.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
           ),
           Padding(
@@ -222,18 +326,18 @@ class _EditProductPage extends State<EditProductPage> {
                                 value: sizeCheckbox[0],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    sizes.add("S");
+                                    sizes.add("XS");
                                     setState(() {
                                       sizeCheckbox[0] = true;
                                     });
                                   } else {
-                                    sizes.removeAt(colors.indexOf("S"));
+                                    sizes.removeAt(sizes.indexOf("XS"));
                                     setState(() {
                                       sizeCheckbox[0] = false;
                                     });
                                   }
                                 }),
-                            const Text("S")
+                            const Text("XS (34)")
                           ],
                         ),
                         Row(
@@ -242,18 +346,18 @@ class _EditProductPage extends State<EditProductPage> {
                                 value: sizeCheckbox[1],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    sizes.add("M");
+                                    sizes.add("S");
                                     setState(() {
                                       sizeCheckbox[1] = true;
                                     });
                                   } else {
-                                    sizes.removeAt(colors.indexOf("M"));
+                                    sizes.removeAt(sizes.indexOf("S"));
                                     setState(() {
                                       sizeCheckbox[1] = false;
                                     });
                                   }
                                 }),
-                            const Text("M")
+                            const Text("S (36)")
                           ],
                         ),
                         Row(
@@ -262,18 +366,18 @@ class _EditProductPage extends State<EditProductPage> {
                                 value: sizeCheckbox[2],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    sizes.add("L");
+                                    sizes.add("M");
                                     setState(() {
                                       sizeCheckbox[2] = true;
                                     });
                                   } else {
-                                    sizes.removeAt(colors.indexOf("L"));
+                                    sizes.removeAt(sizes.indexOf("M"));
                                     setState(() {
                                       sizeCheckbox[2] = false;
                                     });
                                   }
                                 }),
-                            const Text("L")
+                            const Text("M (38)")
                           ],
                         ),
                         Row(
@@ -282,18 +386,38 @@ class _EditProductPage extends State<EditProductPage> {
                                 value: sizeCheckbox[3],
                                 onChanged: (value) {
                                   if (value == true) {
-                                    sizes.add("XL");
+                                    sizes.add("L");
                                     setState(() {
                                       sizeCheckbox[3] = true;
                                     });
                                   } else {
-                                    sizes.removeAt(colors.indexOf("XL"));
+                                    sizes.removeAt(sizes.indexOf("L"));
                                     setState(() {
                                       sizeCheckbox[3] = false;
                                     });
                                   }
                                 }),
-                            const Text("XL")
+                            const Text("L (40)")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                                value: sizeCheckbox[4],
+                                onChanged: (value) {
+                                  if (value == true) {
+                                    sizes.add("XL");
+                                    setState(() {
+                                      sizeCheckbox[4] = true;
+                                    });
+                                  } else {
+                                    sizes.removeAt(sizes.indexOf("XL"));
+                                    setState(() {
+                                      sizeCheckbox[4] = false;
+                                    });
+                                  }
+                                }),
+                            const Text("XL (42)")
                           ],
                         )
                       ]),
@@ -303,133 +427,11 @@ class _EditProductPage extends State<EditProductPage> {
               Column(
                 children: [
                   const Text("Cores"),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[0],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("blue");
-                                    setState(() {
-                                      colorCheckbox[0] = true;
-                                    });
-                                    print(colors);
-                                  } else {
-                                    colors.removeAt(colors.indexOf("blue"));
-                                    setState(() {
-                                      colorCheckbox[0] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Azul")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[1],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("green");
-                                    setState(() {
-                                      colorCheckbox[1] = true;
-                                    });
-                                  } else {
-                                    colors.removeAt(colors.indexOf("green"));
-                                    setState(() {
-                                      colorCheckbox[1] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Verde")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[2],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("yellow");
-                                    setState(() {
-                                      colorCheckbox[2] = true;
-                                    });
-                                  } else {
-                                    colors.removeAt(colors.indexOf("yellow"));
-                                    setState(() {
-                                      colorCheckbox[2] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Amarelo")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[3],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("red");
-                                    setState(() {
-                                      colorCheckbox[3] = true;
-                                    });
-                                  } else {
-                                    colors.removeAt(colors.indexOf("red"));
-                                    setState(() {
-                                      colorCheckbox[3] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Vermelho")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[4],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("black");
-                                    setState(() {
-                                      colorCheckbox[4] = true;
-                                    });
-                                  } else {
-                                    colors.removeAt(colors.indexOf("black"));
-
-                                    setState(() {
-                                      colorCheckbox[4] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Preto")
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                                value: colorCheckbox[5],
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    colors.add("white");
-                                    setState(() {
-                                      colorCheckbox[5] = true;
-                                    });
-                                  } else {
-                                    colors.removeAt(colors.indexOf("white"));
-
-                                    setState(() {
-                                      colorCheckbox[5] = false;
-                                    });
-                                  }
-                                }),
-                            const Text("Branco")
-                          ],
-                        )
-                      ]),
+                  ElevatedButton(
+                      onPressed: () {
+                        ColorPicker();
+                      },
+                      child: Text("Cores"))
                 ],
               ),
             ],
@@ -479,19 +481,19 @@ class _EditProductPage extends State<EditProductPage> {
           Expanded(child: SizedBox()),
           ElevatedButton(
               onPressed: () {
+                List colors = [];
+                ApiColors.forEach((color) =>
+                    colors.add(color.value.toRadixString(16).substring(2)));
                 setState(() {
                   name = nameController.text;
-                  type = typeController.text;
-                  gender = genderController.text;
                   stock = stockController.text;
                   price = priceController.text;
                   promotion = promotionController.text;
-
                   apiCall(
                       name,
-                      type,
+                      typeValue,
                       double.parse(stock),
-                      gender,
+                      genderValue,
                       double.parse(price),
                       colors,
                       sizes,
@@ -502,7 +504,15 @@ class _EditProductPage extends State<EditProductPage> {
                 });
               },
               child: const Text(
-                "Adicionar",
+                "Editar",
+                style: TextStyle(fontSize: 24),
+              )),
+          ElevatedButton(
+              onPressed: () {
+                deleteCall(arguments["id"]);
+              },
+              child: const Text(
+                "Eliminar",
                 style: TextStyle(fontSize: 24),
               )),
         ],

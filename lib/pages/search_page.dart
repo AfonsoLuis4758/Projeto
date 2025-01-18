@@ -18,7 +18,7 @@ class _SearchPage extends State<SearchPage> {
   List<dynamic> searchResults = [];
   bool button = false;
   String? type;
-  String gender = "Homem";
+  String gender = "male";
   Widget listview = Container();
 
   @override
@@ -60,7 +60,7 @@ class _SearchPage extends State<SearchPage> {
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, "/menupage",
-                  arguments: {"gender": gender, "type": "Calças"});
+                  arguments: {"gender": gender, "type": "pants"});
             },
             child: Container(
               height: 50,
@@ -75,7 +75,7 @@ class _SearchPage extends State<SearchPage> {
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, "/menupage",
-                  arguments: {"gender": gender, "type": "T-shirt"});
+                  arguments: {"gender": gender, "type": "shirts"});
             },
             child: Container(
               height: 50,
@@ -90,7 +90,7 @@ class _SearchPage extends State<SearchPage> {
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, "/menupage",
-                  arguments: {"gender": gender, "type": "Sweatshirt"});
+                  arguments: {"gender": gender, "type": "sweatshirts"});
             },
             child: Container(
               height: 50,
@@ -105,28 +105,13 @@ class _SearchPage extends State<SearchPage> {
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, "/menupage",
-                  arguments: {"gender": gender, "type": "Casaco"});
+                  arguments: {"gender": gender, "type": "jackets"});
             },
             child: Container(
               height: 50,
               child: Row(
                 children: [
                   Expanded(child: Text('Casacos')),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, "/menupage",
-                  arguments: {"gender": gender, "type": "Calçado"});
-            },
-            child: Container(
-              height: 50,
-              child: Row(
-                children: [
-                  Expanded(child: Text('Calçado')),
                   Icon(Icons.arrow_forward_ios)
                 ],
               ),
@@ -243,7 +228,7 @@ class _SearchPage extends State<SearchPage> {
                                 button ? Colors.white : Colors.green[700]),
                         onPressed: () {
                           setState(() {
-                            gender = "Homem";
+                            gender = "male";
                             button = false;
                           });
                         },
@@ -255,7 +240,7 @@ class _SearchPage extends State<SearchPage> {
                                 button ? Colors.green[700] : Colors.white),
                         onPressed: () {
                           setState(() {
-                            gender = "Mulher";
+                            gender = "female";
                             button = true;
                           });
                         },
