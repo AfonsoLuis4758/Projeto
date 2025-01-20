@@ -23,6 +23,15 @@ class _CartPage extends State<CartPage> {
   List<bool> isPressed = [];
   bool visibility = false;
   String section = "cart";
+  double total = 0;
+
+  double calculateTotal(List items) {
+    double total = 0;
+    for (var item in items) {
+      total += item["price"] * (1 - (item["promotion"] / 100));
+    }
+    return total;
+  }
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,7 +98,7 @@ class _CartPage extends State<CartPage> {
     }
   }
 
-  Future cartCall(item) async {
+  Future cartCall(item, quantity, color, size) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
     final String? email = prefs.getString('email');
@@ -102,7 +111,29 @@ class _CartPage extends State<CartPage> {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({"cart": item}),
+      body: jsonEncode(
+          {"id": item, "quantity": quantity, "color": color, "size": size}),
+    );
+    if (response.statusCode == 200) {
+      print("posted");
+      return json.decode(response.body);
+    }
+  }
+
+  Future cartQuantityCall(item, quantity) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? futureToken = prefs.getString('token');
+    final String? email = prefs.getString('email');
+    String token = futureToken!.substring(1, futureToken.length - 1);
+
+    http.Response response;
+    response = await http.put(
+      Uri.parse("http://localhost:5000/user/cart/quantity/$email"),
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({"id": item, "quantity": quantity}),
     );
     if (response.statusCode == 200) {
       print("posted");
@@ -158,6 +189,7 @@ class _CartPage extends State<CartPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
+                double total = calculateTotal(snapshot.data);
                 // Display the fetched data
                 return Scaffold(
                   body: Column(children: [
@@ -214,6 +246,69 @@ class _CartPage extends State<CartPage> {
                             } else {
                               isPressed.add(false);
                             }
+
+                            int quantity = 1;
+                            var cartItem = userCart.singleWhere(
+                              (item) =>
+                                  item["id"] == snapshot.data[index]["_id"],
+                              orElse: () => null,
+                            );
+                            if (cartItem != null) {
+                              quantity = cartItem["quantity"];
+                            }
+
+                            Widget buttonWidget = Container();
+
+                            if (section == "cart") {
+                              buttonWidget = Row(
+                                children: [
+                                  InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          quantity--;
+                                          cartCall(
+                                              snapshot.data[index]["_id"],
+                                              quantity,
+                                              snapshot.data[index]["color"][0],
+                                              snapshot.data[index]["sizes"][0]);
+                                        });
+                                      },
+                                      child: Icon(Icons.arrow_back_ios)),
+                                  Text("$quantity"),
+                                  InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          quantity++;
+                                          cartQuantityCall(
+                                              snapshot.data[index]["_id"],
+                                              quantity);
+                                        });
+                                      },
+                                      child: Icon(Icons.arrow_forward_ios)),
+                                ],
+                              );
+                            } else {
+                              buttonWidget = ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {});
+                                  if (userCart.singleWhere(
+                                          (item) =>
+                                              item["id"] ==
+                                              snapshot.data[index]["_id"],
+                                          orElse: () => null) !=
+                                      null) {
+                                  } else {
+                                    await cartCall(
+                                        snapshot.data[index]["_id"],
+                                        1,
+                                        snapshot.data[index]["color"][0],
+                                        snapshot.data[index]["sizes"][0]);
+                                  }
+                                },
+                                child: Text("< Carrinho"),
+                              );
+                            }
+
                             return Center(
                                 child: Padding(
                               padding: const EdgeInsets.all(12.0),
@@ -269,8 +364,12 @@ class _CartPage extends State<CartPage> {
                                                           .data[index]["_id"]);
                                                     } else if (section ==
                                                         "cart") {
-                                                      cartCall(snapshot
-                                                          .data[index]["_id"]);
+                                                      cartCall(
+                                                          snapshot.data[index]
+                                                              ["_id"],
+                                                          1,
+                                                          " ",
+                                                          " ");
                                                     }
                                                     setState(() {});
                                                   },
@@ -291,21 +390,7 @@ class _CartPage extends State<CartPage> {
                                               decoration:
                                                   TextDecoration.lineThrough,
                                               color: discountColor)),
-                                      Visibility(
-                                          visible: visibility,
-                                          child: ElevatedButton(
-                                            onPressed: () async {
-                                              setState(() {});
-                                              if (userCart.contains(snapshot
-                                                  .data[index]["_id"])) {
-                                              } else {
-                                                print(userCart);
-                                                await cartCall(snapshot
-                                                    .data[index]["_id"]);
-                                              }
-                                            },
-                                            child: Text("< Carrinho"),
-                                          )),
+                                      buttonWidget,
                                     ],
                                   ),
                                 ),
@@ -316,11 +401,26 @@ class _CartPage extends State<CartPage> {
                     Expanded(child: Container()),
                     Visibility(
                         visible: !visibility,
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              await purchaseCall();
-                            },
-                            child: Text("Comprar")))
+                        child: Container(
+                          color: Colors.green[300],
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                      "Número de artigos: ${snapshot.data.length}"),
+                                  Text("Total: $total")
+                                ],
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    await purchaseCall();
+                                    setState(() {});
+                                  },
+                                  child: Text("Comprar")),
+                            ],
+                          ),
+                        ))
                   ]),
                   floatingActionButton: FloatingActionButton(
                     foregroundColor: Colors.white,

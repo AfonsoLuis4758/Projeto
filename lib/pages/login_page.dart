@@ -14,6 +14,7 @@ class _LoginPage extends State<LoginPage> {
   String passWord = '';
   String token = "";
   bool _passwordVisible = false;
+  bool textVisible = false;
   final emailController = TextEditingController();
   final passController = TextEditingController();
 
@@ -33,8 +34,9 @@ class _LoginPage extends State<LoginPage> {
       setState(() {
         token = response.body;
       });
-      print(prefs.getString('token'));
+      Navigator.pushNamed(context, "/mainpage");
     } else {
+      textVisible = true;
       print("error");
     }
   }
@@ -81,6 +83,8 @@ class _LoginPage extends State<LoginPage> {
               ),
             ),
           ),
+          Visibility(
+              visible: textVisible, child: Text("Email ou password invalidas")),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 48),
@@ -90,7 +94,6 @@ class _LoginPage extends State<LoginPage> {
                       email = emailController.text;
                       passWord = passController.text;
                       apiCall(email, passWord);
-                      Navigator.pushNamed(context, "/mainpage");
                     });
                   },
                   child: const Text(

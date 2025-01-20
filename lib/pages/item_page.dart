@@ -31,7 +31,7 @@ Future wishlistCall(wish) async {
   }
 }
 
-Future cartCall(item) async {
+Future cartCall(item, quantity, color, size) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? futureToken = prefs.getString('token');
   final String? email = prefs.getString('email');
@@ -44,7 +44,8 @@ Future cartCall(item) async {
       'Content-type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: jsonEncode({"cart": item}),
+    body: jsonEncode(
+        {"id": item, "quantity": quantity, "color": color, "size": size}),
   );
   if (response.statusCode == 200) {
     print("posted");
@@ -53,12 +54,18 @@ Future cartCall(item) async {
 }
 
 class _ItemPage extends State<ItemPage> {
+  late final arguments = (ModalRoute.of(context)?.settings.arguments ??
+      <String, dynamic>{}) as Map;
+
+  late String selectedColor = arguments["color"][0];
+  late String selectedSize = arguments["sizes"][0];
+  late bool isPressed = arguments["wishlisted"];
+
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+    late final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     Color discountColor = Colors.white;
-    bool isPressed = arguments["wishlisted"];
     String discountPrice = "";
     if (arguments["promotion"] != 0) {
       discountColor = Colors.black;
@@ -125,13 +132,23 @@ class _ItemPage extends State<ItemPage> {
                   itemBuilder: (BuildContext context, int index) {
                     Color currentColor =
                         Color(int.parse("0xff${arguments["color"][index]}"));
-                    print(currentColor);
-                    return Container(
-                      width: 40.0,
-                      height: 40.0,
-                      decoration: new BoxDecoration(
-                        color: currentColor,
-                        shape: BoxShape.circle,
+                    double containerSize = 40;
+                    if (arguments["color"][index] == selectedColor) {
+                      containerSize = 50;
+                    }
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedColor = arguments["color"][index];
+                        });
+                      },
+                      child: Container(
+                        width: containerSize,
+                        height: containerSize,
+                        decoration: new BoxDecoration(
+                          color: currentColor,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     );
                   }),
@@ -161,16 +178,29 @@ class _ItemPage extends State<ItemPage> {
               } else {
                 sizes.add(arguments["sizes"][index]);
               }
-              return CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.green,
-                  child: Text(sizes[index].toString(),
-                      style: TextStyle(fontSize: 30, color: Colors.white)));
+              double fontsize = 30;
+              if (arguments["sizes"][index] == selectedSize) {
+                fontsize = 40;
+              }
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    selectedSize = arguments["sizes"][index];
+                  });
+                },
+                child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.green,
+                    child: Text(sizes[index].toString(),
+                        style: TextStyle(
+                            fontSize: fontsize, color: Colors.white))),
+              );
             }),
         Expanded(child: SizedBox()),
         ElevatedButton(
             onPressed: () async {
-              await cartCall(arguments["id"]);
+              print(selectedSize);
+              await cartCall(arguments["id"], 1, selectedColor, selectedSize);
               await wishlistCall(arguments["id"]);
             },
             child: const Text(

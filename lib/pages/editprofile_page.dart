@@ -18,6 +18,7 @@ class _EditProfilePage extends State<EditProfilePage> {
   String gender = '';
   String address = "";
   String password = "";
+  bool textVisible = false;
 
   final usernameController = TextEditingController();
   final genderController = TextEditingController();
@@ -52,108 +53,114 @@ class _EditProfilePage extends State<EditProfilePage> {
     if (response.statusCode == 200) {
       print("posted");
     } else {
+      textVisible = true;
       print("error");
     }
   }
 
   Future<void> passwordDialog(context) async {
     bool _passwordVisible = false;
-    double textvisible = 0.0;
     return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Alterar password'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                    child: TextFormField(
-                      controller: passwordController,
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        border: const UnderlineInputBorder(),
-                        labelText: 'Introduza a sua nova password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Based on passwordVisible state choose the icon
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
+          bool textvisible = false;
+          return StatefulBuilder(builder: (context, state) {
+            return AlertDialog(
+              title: Text('Alterar password'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: !_passwordVisible,
+                        decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
+                          labelText: 'Introduza a sua nova password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              state(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                    child: TextFormField(
-                      controller: passwordController2,
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        border: const UnderlineInputBorder(),
-                        labelText: 'Confirme a password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Based on passwordVisible state choose the icon
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                      child: TextFormField(
+                        controller: passwordController2,
+                        obscureText: !_passwordVisible,
+                        decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
+                          labelText: 'Confirme a password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              state(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
                         ),
                       ),
                     ),
-                  ),
-                  Opacity(
-                    opacity: textvisible,
-                    child: Text("Passwords dont match!",
-                        style: TextStyle(color: Colors.red)),
-                  )
-                ],
+                    Visibility(
+                      visible: textvisible,
+                      child: Text("Passwords não são iguais!",
+                          style: TextStyle(color: Colors.red)),
+                    )
+                  ],
+                ),
               ),
-            ),
-            actions: <Widget>[
-              Row(
-                children: [
-                  TextButton(
-                    child: const Text('Exit'),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Change password'),
-                    onPressed: () async {
-                      if (passwordController.text == passwordController2.text) {
-                        await passwordChange(passwordController.text);
+              actions: <Widget>[
+                Row(
+                  children: [
+                    TextButton(
+                      child: const Text('Sair'),
+                      onPressed: () async {
                         Navigator.of(context).pop();
-                      } else {
-                        setState(() {
-                          textvisible = 1.0;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Alterar password'),
+                      onPressed: () async {
+                        if (passwordController.text ==
+                            passwordController2.text) {
+                          await passwordChange(passwordController.text);
+                          Navigator.of(context).pop();
+                        } else {
+                          state(() {
+                            textvisible = true;
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          });
         });
   }
 
@@ -318,6 +325,12 @@ class _EditProfilePage extends State<EditProfilePage> {
               ),
             ),
           ),
+          Visibility(
+              visible: textVisible,
+              child: Text(
+                "Verifique se os seus dados estão corretos",
+                style: TextStyle(color: Colors.red),
+              )),
           InkWell(
             onTap: () {
               passwordDialog(context);
