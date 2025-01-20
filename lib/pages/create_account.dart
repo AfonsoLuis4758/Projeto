@@ -96,12 +96,17 @@ class _CreateAccount extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            padding: const EdgeInsets.all(48.0),
+            child: Image.asset("assets/images/LusoVeste.png"),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: TextField(
               controller: userController,
               keyboardType: TextInputType.emailAddress,
@@ -112,7 +117,7 @@ class _CreateAccount extends State<CreateAccount> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -123,7 +128,7 @@ class _CreateAccount extends State<CreateAccount> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: DropdownButton<String>(
               value: genderValue,
               icon: const Icon(Icons.arrow_downward),
@@ -149,7 +154,7 @@ class _CreateAccount extends State<CreateAccount> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: TextField(
               controller: addressController,
               keyboardType: TextInputType.emailAddress,
@@ -160,7 +165,7 @@ class _CreateAccount extends State<CreateAccount> {
                 suffixIcon: IconButton(
                   icon: const Icon(
                     Icons.map_outlined,
-                    color: Colors.black,
+                    color: Colors.black54,
                   ),
                   onPressed: () async {
                     // to use gps, only works on phone
@@ -180,7 +185,7 @@ class _CreateAccount extends State<CreateAccount> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
             child: TextFormField(
               controller: passController,
               obscureText: !_passwordVisible,
@@ -191,7 +196,7 @@ class _CreateAccount extends State<CreateAccount> {
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
                     _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Colors.black54,
                   ),
                   onPressed: () {
                     // Update the state i.e. toogle the state of passwordVisible variable

@@ -44,34 +44,39 @@ class _LoginPage extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+            padding: const EdgeInsets.all(48.0),
+            child: Image.asset("assets/images/LusoVeste.png"),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
             child: TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter your e-mail',
+                labelText: 'Introduz o teu E-mail',
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
             child: TextFormField(
               controller: passController,
               obscureText: !_passwordVisible,
               decoration: InputDecoration(
                 border: const UnderlineInputBorder(),
-                labelText: 'Enter your password',
+                labelText: 'Introduza a sua password',
                 suffixIcon: IconButton(
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
                     _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Colors.black54,
                   ),
                   onPressed: () {
                     // Update the state i.e. toogle the state of passwordVisible variable
@@ -83,8 +88,7 @@ class _LoginPage extends State<LoginPage> {
               ),
             ),
           ),
-          Visibility(
-              visible: textVisible, child: Text("Email ou password invalidas")),
+          Visibility(visible: textVisible, child: Text("Email ou password invalidas")),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 48),
@@ -105,20 +109,22 @@ class _LoginPage extends State<LoginPage> {
                   )),
             ),
           ),
+          Text("Não tens conta? Cria uma!", style: TextStyle(fontSize: 14),),
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
+              padding: const EdgeInsets.only(top: 12),
               child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, "/createaccount");
                   },
                   child: const Text(
-                    "Create account",
+                    "Criar conta",
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54),
-                  )),
+                  )
+              ),
             ),
           ),
         ],

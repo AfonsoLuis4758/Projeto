@@ -209,7 +209,7 @@ class _SearchPage extends State<SearchPage> {
           iconTheme: const IconThemeData(color: Colors.white),
           actions: <Widget>[
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.account_circle_outlined,
                 color: Colors.white,
               ),
@@ -245,8 +245,7 @@ class _SearchPage extends State<SearchPage> {
                           child: Text("Homem",
                             style: TextStyle (color: button ? Colors.black : Colors.white,  fontSize: 18),
                           )
-                            
-                          ),
+                      ),
                     )),
                 Expanded(
                     child: Padding(
