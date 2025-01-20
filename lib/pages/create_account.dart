@@ -21,6 +21,7 @@ class _CreateAccount extends State<CreateAccount> {
   List<String> gendersforApi = ["male", "female"];
   String genderValue = "Homem";
 
+  bool textVisible = false;
   bool _passwordVisible = false;
   final userController = TextEditingController();
   final passController = TextEditingController();
@@ -106,7 +107,7 @@ class _CreateAccount extends State<CreateAccount> {
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter your username',
+                labelText: 'Introduza o seu username',
               ),
             ),
           ),
@@ -117,7 +118,7 @@ class _CreateAccount extends State<CreateAccount> {
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter your e-mail',
+                labelText: 'Introduza o seu email',
               ),
             ),
           ),
@@ -155,7 +156,7 @@ class _CreateAccount extends State<CreateAccount> {
               decoration: InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText:
-                    'Enter your adress or click the icon for automatic location',
+                    'Introduza a sua morada (clique no icone para usar o gps)',
                 suffixIcon: IconButton(
                   icon: const Icon(
                     Icons.map_outlined,
@@ -185,7 +186,7 @@ class _CreateAccount extends State<CreateAccount> {
               obscureText: !_passwordVisible,
               decoration: InputDecoration(
                 border: const UnderlineInputBorder(),
-                labelText: 'Enter your password',
+                labelText: 'Introduza a sua password',
                 suffixIcon: IconButton(
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
@@ -202,6 +203,12 @@ class _CreateAccount extends State<CreateAccount> {
               ),
             ),
           ),
+          Visibility(
+              visible: textVisible,
+              child: Text(
+                "Verifique os campos",
+                style: TextStyle(color: Colors.red),
+              )),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 48),
@@ -216,7 +223,7 @@ class _CreateAccount extends State<CreateAccount> {
                     });
                   },
                   child: const Text(
-                    "Create account",
+                    "Criar Conta",
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

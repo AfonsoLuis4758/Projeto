@@ -73,7 +73,8 @@ class _MenuPage extends State<MenuPage> {
                     divisions: 12,
                     label: _currentSliderValue.round().toString(),
                     onChanged: (double value) {
-                      setState(() {
+                      state(() {
+                        // Use the state parameter here
                         _currentSliderValue = value;
                       });
                     },
@@ -90,12 +91,12 @@ class _MenuPage extends State<MenuPage> {
                                   onChanged: (value) {
                                     if (value == true) {
                                       sizes.add("XS");
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[0] = true;
                                       });
                                     } else {
                                       sizes.removeAt(sizes.indexOf("XS"));
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[0] = false;
                                       });
                                     }
@@ -110,12 +111,12 @@ class _MenuPage extends State<MenuPage> {
                                   onChanged: (value) {
                                     if (value == true) {
                                       sizes.add("S");
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[1] = true;
                                       });
                                     } else {
                                       sizes.removeAt(sizes.indexOf("S"));
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[1] = false;
                                       });
                                     }
@@ -130,12 +131,12 @@ class _MenuPage extends State<MenuPage> {
                                   onChanged: (value) {
                                     if (value == true) {
                                       sizes.add("M");
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[2] = true;
                                       });
                                     } else {
                                       sizes.removeAt(sizes.indexOf("M"));
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[2] = false;
                                       });
                                     }
@@ -150,12 +151,12 @@ class _MenuPage extends State<MenuPage> {
                                   onChanged: (value) {
                                     if (value == true) {
                                       sizes.add("L");
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[3] = true;
                                       });
                                     } else {
                                       sizes.removeAt(sizes.indexOf("L"));
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[3] = false;
                                       });
                                     }
@@ -170,12 +171,12 @@ class _MenuPage extends State<MenuPage> {
                                   onChanged: (value) {
                                     if (value == true) {
                                       sizes.add("XL");
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[4] = true;
                                       });
                                     } else {
                                       sizes.removeAt(sizes.indexOf("XL"));
-                                      setState(() {
+                                      state(() {
                                         sizeCheckbox[4] = false;
                                       });
                                     }
@@ -310,6 +311,14 @@ class _MenuPage extends State<MenuPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
+                List filteredItems = snapshot.data.where((item) {
+                  final firstSet = item["sizes"].toSet();
+                  final secondSet = sizes.toSet();
+                  final intersection = firstSet.intersection(secondSet);
+                  return item["price"] * (1 - (item["promotion"] / 100)) <=
+                          max &&
+                      intersection.isNotEmpty;
+                }).toList();
                 // Display the fetched data
                 return Scaffold(
                   body: Column(children: [
@@ -349,135 +358,98 @@ class _MenuPage extends State<MenuPage> {
                     ),
                     Expanded(
                       child: GridView.builder(
-                          itemCount: snapshot.data.length,
+                          itemCount: filteredItems.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: (1 / 1.5),
                             crossAxisCount: cardCount,
                           ),
                           itemBuilder: (BuildContext context, int index) {
-                            if (snapshot.data[index] != null) {
-                              final firstSet =
-                                  snapshot.data[index]["sizes"].toSet();
-                              final secondSet = sizes.toSet();
-                              final intersection =
-                                  firstSet.intersection(secondSet);
-                              if (snapshot.data[index]["price"] *
-                                          (1 -
-                                              (snapshot.data[index]
-                                                      ["promotion"] /
-                                                  100)) >
-                                      max ||
-                                  !intersection.isNotEmpty) {
-                                snapshot.data.removeAt(index);
-                                snapshot.data.add(null);
-                              }
+                            final item = filteredItems[index];
 
-                              if (snapshot.data[index]["promotion"] != 0) {
-                                discountColor = Colors.black;
-                                discountPrice.add(
-                                    snapshot.data[index]["price"].toString());
-                              } else {
-                                discountPrice.add("");
-                              }
-                              if (userWishlist
-                                  .contains(snapshot.data[index]["_id"])) {
-                                isPressed.add(true);
-                              } else {
-                                isPressed.add(false);
-                              }
-                              return Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(context, "/itempage",
-                                          arguments: {
-                                            "id": snapshot.data[index]["_id"],
-                                            "image": snapshot.data[index]
-                                                ["image"],
-                                            "name": snapshot.data[index]
-                                                ["name"],
-                                            "gender": snapshot.data[index]
-                                                ["gender"],
-                                            "type": snapshot.data[index]
-                                                ["type"],
-                                            "stock": snapshot.data[index]
-                                                ["stock"],
-                                            "price": snapshot.data[index]
-                                                ["price"],
-                                            "color": snapshot.data[index]
-                                                ["color"],
-                                            "sizes": snapshot.data[index]
-                                                ["sizes"],
-                                            "promotion": snapshot.data[index]
-                                                ["promotion"],
-                                            "recent": snapshot.data[index]
-                                                ["recent"],
-                                            "wishlisted": isPressed[index]
-                                          });
-                                    },
-                                    child: Card(
-                                      margin: EdgeInsets.zero,
-                                      color: Colors.green,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      elevation: 5,
-                                      child: Column(
-                                        children: [
-                                          Hero(
-                                              tag: "herotag" +
-                                                  snapshot.data[index]["_id"],
-                                              child: Image.memory(
-                                                base64Decode(snapshot
-                                                    .data[index]["image"]
-                                                    .replaceAll("-", "/")),
-                                                fit: BoxFit.cover,
-                                                height: 200,
-                                              )),
-                                          Text(snapshot.data[index]["name"]),
-                                          Text((snapshot.data[index]["price"] *
-                                                  (1 -
-                                                      (snapshot.data[index]
-                                                              ["promotion"] /
-                                                          100)))
-                                              .toStringAsFixed(2)),
-                                          Text((discountPrice[index]),
-                                              style: TextStyle(
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: discountColor)),
-                                          InkWell(
-                                            onTap: () async {
-                                              setState(() {
-                                                isPressed[index] =
-                                                    !isPressed[index];
-                                              });
-                                              await wishlistCall(
-                                                  snapshot.data[index]["_id"]);
-                                            },
-                                            child: Icon(
-                                              Icons.favorite,
-                                              color: isPressed[index]
-                                                  ? Colors.red
-                                                  : Colors.white,
-                                              size: 24.0,
-                                            ),
+                            if (item["promotion"] != 0) {
+                              discountColor = Colors.black;
+                              discountPrice.add(item["price"].toString());
+                            } else {
+                              discountPrice.add("");
+                            }
+                            if (userWishlist.contains(item["_id"])) {
+                              isPressed.add(true);
+                            } else {
+                              isPressed.add(false);
+                            }
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, "/itempage",
+                                        arguments: {
+                                          "id": item["_id"],
+                                          "image": item["image"],
+                                          "name": item["name"],
+                                          "gender": item["gender"],
+                                          "type": item["type"],
+                                          "stock": item["stock"],
+                                          "price": item["price"],
+                                          "color": item["color"],
+                                          "sizes": item["sizes"],
+                                          "promotion": item["promotion"],
+                                          "recent": item["recent"],
+                                          "wishlisted": isPressed[index]
+                                        });
+                                  },
+                                  child: Card(
+                                    margin: EdgeInsets.zero,
+                                    color: Colors.green,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    elevation: 5,
+                                    child: Column(
+                                      children: [
+                                        Hero(
+                                            tag: "herotag" + item["_id"],
+                                            child: Image.memory(
+                                              base64Decode(item["image"]
+                                                  .replaceAll("-", "/")),
+                                              fit: BoxFit.cover,
+                                              height: 200,
+                                            )),
+                                        Text(item["name"]),
+                                        Text((item["price"] *
+                                                (1 - (item["promotion"] / 100)))
+                                            .toStringAsFixed(2)),
+                                        Text((discountPrice[index]),
+                                            style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                color: discountColor)),
+                                        InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              isPressed[index] =
+                                                  !isPressed[index];
+                                            });
+                                            await wishlistCall(item["_id"]);
+                                          },
+                                          child: Icon(
+                                            Icons.favorite,
+                                            color: isPressed[index]
+                                                ? Colors.red
+                                                : Colors.white,
+                                            size: 24.0,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              );
-                            } else {
-                              return Container();
-                            }
+                              ),
+                            );
                           }),
-                    ),
+                    )
                   ]),
                   floatingActionButton: Visibility(
                     visible: visibility,
