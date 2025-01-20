@@ -55,10 +55,12 @@ class _MainPage extends State<MainPage> {
                 activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
-                label: "CESTO",
+                label: "Cesto",
                 activeIcon:
                     Icon(Icons.shopping_cart_outlined, color: Colors.white)),
           ],
+          selectedItemColor: Colors.white,
+          selectedFontSize: 14,
         ),
       ),
     );
