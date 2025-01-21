@@ -163,7 +163,7 @@ class _CartPage extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.green[800],
           title: const Text(
             "LusoVest",
             style: TextStyle(color: Colors.white),
@@ -201,7 +201,7 @@ class _CartPage extends State<CartPage> {
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: button
                                         ? Colors.white
-                                        : Colors.green[700]),
+                                        : Colors.green),
                                 onPressed: () {
                                   setState(() {
                                     section = "cart";
@@ -209,21 +209,24 @@ class _CartPage extends State<CartPage> {
                                     visibility = false;
                                   });
                                 },
-                                child: Text("Carrinho"))),
+                                child: Text("Carrinho",  style: TextStyle(color: Colors.black)))),
                         Expanded(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: button
-                                        ? Colors.green[700]
+                                        ? Colors.green
                                         : Colors.white),
+                                        
                                 onPressed: () {
                                   setState(() {
                                     section = "wishlist";
                                     button = true;
                                     visibility = true;
                                   });
+                                  TextStyle(color: Colors.white);
                                 },
-                                child: Text("Wishlist"))),
+                                
+                                child: Text("Wishlist", style: TextStyle(color: Colors.black),))),
                       ],
                     ),
                     Expanded(
@@ -417,7 +420,7 @@ class _CartPage extends State<CartPage> {
                                     await purchaseCall();
                                     setState(() {});
                                   },
-                                  child: Text("Comprar")),
+                                  child: Text("Comprar", style: TextStyle(color: Colors.black),)),
                             ],
                           ),
                         ))
