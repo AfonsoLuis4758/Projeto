@@ -285,7 +285,7 @@ class _MenuPage extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.green[800],
           title: const Text(
             "LusoVest",
             style: TextStyle(color: Colors.white),
@@ -324,36 +324,44 @@ class _MenuPage extends State<MenuPage> {
                   body: Column(children: [
                     Row(
                       children: [
-                        Text(
-                          category,
-                          style: TextStyle(fontSize: 32),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24, right: 48),
+                          child: Text(
+                            category,
+                            style: TextStyle(fontSize: 32),
+                          ),
                         ),
-                        Expanded(
+                        Padding(
+                          padding: const EdgeInsets.only(left: 64, right: 8),
                           child: ElevatedButton(
                               onPressed: () {
                                 filterPop();
                               },
                               child: const Icon(
                                 Icons.filter_alt_outlined,
-                                color: Colors.black,
+                                color: Colors.black54,
                               )),
                         ),
-                        ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                if (cardCount == 2) {
-                                  cardCount = 1;
-                                  gridType = Icons.list;
-                                } else {
-                                  cardCount = 2;
-                                  gridType = Icons.grid_3x3;
-                                }
-                              });
-                            },
-                            child: Icon(
-                              gridType,
-                              color: Colors.black,
-                            ))
+                        Padding(
+                          padding: const EdgeInsets.only(right : 24, top: 16, bottom: 16, left: 8),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (cardCount == 2) {
+                                    cardCount = 1;
+                                    gridType = Icons.list;
+                                  } else {
+                                    cardCount = 2;
+                                    gridType = Icons.grid_3x3;
+                                  }
+                                });
+                              },
+                              child: Icon(
+                                gridType,
+                                color: Colors.black54,
+                              )
+                            ),
+                          )
                       ],
                     ),
                     Expanded(
@@ -361,7 +369,7 @@ class _MenuPage extends State<MenuPage> {
                           itemCount: filteredItems.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / 1.5),
+                            childAspectRatio: (1 / 1.62),
                             crossAxisCount: cardCount,
                           ),
                           itemBuilder: (BuildContext context, int index) {
@@ -380,7 +388,7 @@ class _MenuPage extends State<MenuPage> {
                             }
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding: const EdgeInsets.only(right: 16, left: 16),
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(context, "/itempage",
@@ -417,15 +425,28 @@ class _MenuPage extends State<MenuPage> {
                                               fit: BoxFit.cover,
                                               height: 200,
                                             )),
-                                        Text(item["name"]),
-                                        Text((item["price"] *
-                                                (1 - (item["promotion"] / 100)))
-                                            .toStringAsFixed(2)),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 8, right: 8),
+                                            child: Text(item["name"], style: TextStyle(color: Colors.white, fontSize: 18)),
+                                          )
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 8),
+                                            child: Text((item["price"] *
+                                                    (1 - (item["promotion"] / 100)))
+                                                .toStringAsFixed(2), style: TextStyle(color: Colors.white, fontSize: 14),),
+                                          ),
+                                        ),
                                         Text((discountPrice[index]),
                                             style: TextStyle(
                                                 decoration:
                                                     TextDecoration.lineThrough,
                                                 color: discountColor)),
+                                          Expanded(child: Container()),
                                         InkWell(
                                           onTap: () async {
                                             setState(() {
@@ -434,12 +455,18 @@ class _MenuPage extends State<MenuPage> {
                                             });
                                             await wishlistCall(item["_id"]);
                                           },
-                                          child: Icon(
-                                            Icons.favorite,
-                                            color: isPressed[index]
-                                                ? Colors.red
-                                                : Colors.white,
-                                            size: 24.0,
+                                          child: Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Icon(
+                                                Icons.favorite,
+                                                color: isPressed[index]
+                                                    ? Colors.red
+                                                    : Colors.white,
+                                                size: 24.0,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],

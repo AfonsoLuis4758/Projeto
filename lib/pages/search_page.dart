@@ -201,7 +201,7 @@ class _SearchPage extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.green[700],
+          backgroundColor: Colors.green[800],
           title: const Text(
             "LusoVest",
             style: TextStyle(color: Colors.white),

@@ -33,7 +33,7 @@ class _MainPage extends State<MainPage> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-            canvasColor: Colors.green,
+            canvasColor: Colors.green[800],
             textTheme: Theme.of(context)
                 .textTheme
                 .copyWith(bodySmall: const TextStyle(color: Colors.green))),
@@ -55,7 +55,7 @@ class _MainPage extends State<MainPage> {
                 activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
-                label: "Cesto" backgroundColor: Color(0xFF000000),
+                label: "Cesto", backgroundColor: Color(0xFF000000),
                 activeIcon:
                     Icon(Icons.shopping_cart_outlined, color: Colors.white)),
           ],
