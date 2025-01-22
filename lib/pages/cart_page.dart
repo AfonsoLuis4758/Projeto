@@ -197,43 +197,50 @@ class _CartPage extends State<CartPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: button
-                                        ? Colors.white
-                                        : Colors.green),
-                                onPressed: () {
-                                  setState(() {
-                                    section = "cart";
-                                    button = false;
-                                    visibility = false;
-                                  });
-                                },
-                                child: Text("Carrinho",  style: TextStyle(color: Colors.black)))),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 24, right: 8, top: 16, bottom: 16),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: button
+                                          ? Colors.white
+                                          : Colors.green
+                                  ),  
+                                  onPressed: () {
+                                    setState(() {
+                                      section = "cart";
+                                      button = false;
+                                      visibility = false;
+                                    });
+                                  },
+                                  child: Text("Carrinho",  style: TextStyle(color: button ? Colors.black : Colors.white),)),
+                            )),
                         Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: button
-                                        ? Colors.green
-                                        : Colors.white),
-                                        
-                                onPressed: () {
-                                  setState(() {
-                                    section = "wishlist";
-                                    button = true;
-                                    visibility = true;
-                                  });
-                                  TextStyle(color: Colors.white);
-                                },
-                                
-                                child: Text("Wishlist", style: TextStyle(color: Colors.black),))),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 24, top: 16, bottom: 16),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: button
+                                          ? Colors.green
+                                          : Colors.white),
+                                          
+                                  onPressed: () {
+                                    setState(() {
+                                      section = "wishlist";
+                                      button = true;
+                                      visibility = true;
+                                    });
+                                    TextStyle(color: Colors.white);
+                                  },
+                                  
+                                  child: Text("Wishlist", style: TextStyle(color: button ? Colors.white : Colors.black),)),
+                            )),
                       ],
                     ),
                     Expanded(
                       child: GridView.builder(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / 1.6),
+                            childAspectRatio: (1 / 1.62),
                             crossAxisCount: cardCount,
                           ),
                           itemCount: snapshot.data.length,
@@ -265,29 +272,34 @@ class _CartPage extends State<CartPage> {
                             if (section == "cart") {
                               buttonWidget = Row(
                                 children: [
-                                  InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          quantity--;
-                                          cartCall(
-                                              snapshot.data[index]["_id"],
-                                              quantity,
-                                              snapshot.data[index]["color"][0],
-                                              snapshot.data[index]["sizes"][0]);
-                                        });
-                                      },
-                                      child: Icon(Icons.arrow_back_ios)),
-                                  Text("$quantity"),
-                                  InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          quantity++;
-                                          cartQuantityCall(
-                                              snapshot.data[index]["_id"],
-                                              quantity);
-                                        });
-                                      },
-                                      child: Icon(Icons.arrow_forward_ios)),
+                                  Expanded(child: Container()),
+                                  Expanded(
+                                    child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            quantity--;
+                                            cartCall(
+                                                snapshot.data[index]["_id"],
+                                                quantity,
+                                                snapshot.data[index]["color"][0],
+                                                snapshot.data[index]["sizes"][0]);
+                                          });
+                                        },
+                                        child: Icon(Icons.arrow_back_ios, color: Colors.white)),
+                                  ),
+                                  Text("$quantity", style: TextStyle(color: Colors.white, fontSize: 20),),
+                                  Expanded(
+                                    child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            quantity++;
+                                            cartQuantityCall(
+                                                snapshot.data[index]["_id"],
+                                                quantity);
+                                          });
+                                        },
+                                        child: Icon(Icons.arrow_forward_ios, color: Colors.white)),
+                                  ),
                                 ],
                               );
                             } else {
@@ -308,13 +320,14 @@ class _CartPage extends State<CartPage> {
                                         snapshot.data[index]["sizes"][0]);
                                   }
                                 },
-                                child: Text("< Carrinho"),
+                                child: Text("Carrinho", style: TextStyle(color: Colors.black),),
                               );
                             }
 
                             return Center(
                                 child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.only(
+                                  left: 16, right: 16, top: 8),
                               child: InkWell(
                                 onTap: () {
                                   Navigator.pushNamed(context, "/itempage",
@@ -381,13 +394,22 @@ class _CartPage extends State<CartPage> {
                                           ),
                                         ],
                                       ),
-                                      Text(snapshot.data[index]["name"]),
-                                      Text((snapshot.data[index]["price"] *
-                                              (1 -
-                                                  (snapshot.data[index]
-                                                          ["promotion"] /
-                                                      100)))
-                                          .toString()),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8, right: 8),
+                                        child: Text(snapshot.data[index]["name"], style: TextStyle(color: Colors.white, fontSize: 18)),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 8),
+                                          child: Text((snapshot.data[index]["price"] *
+                                                  (1 -
+                                                      (snapshot.data[index]
+                                                              ["promotion"] /
+                                                          100)))
+                                              .toString(), style: TextStyle(color: Colors.white, fontSize: 14)),
+                                        ),
+                                      ),
                                       Text((discountPrice),
                                           style: TextStyle(
                                               decoration:
@@ -405,34 +427,43 @@ class _CartPage extends State<CartPage> {
                     Visibility(
                         visible: !visibility,
                         child: Container(
-                          color: Colors.green[300],
+                          decoration: BoxDecoration(
+                            borderRadius : BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            color: Colors.greenAccent[700],
+                          ),
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                      "Número de artigos: ${snapshot.data.length}"),
-                                  Text("Total: $total")
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                        "Número de artigos: ${snapshot.data.length}", style: TextStyle(fontSize: 20, color: Colors.white)),
+                                  ),
+                                  Expanded(child: Container()),
+                                  Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text("Total: ${total.toStringAsFixed(2)}", style: TextStyle(fontSize: 20, color: Colors.white)),
+                                  )
                                 ],
                               ),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    await purchaseCall();
-                                    setState(() {});
-                                  },
-                                  child: Text("Comprar", style: TextStyle(color: Colors.black),)),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                    onPressed: () async {
+                                      await purchaseCall();
+                                      setState(() {});
+                                    },
+                                    child: Text("Comprar", style: TextStyle(color: Colors.black),)),
+                              ),
                             ],
                           ),
                         ))
                   ]),
-                  floatingActionButton: FloatingActionButton(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.green,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/creationpage");
-                    },
-                    child: const Icon(Icons.add),
-                  ),
+                 
                 );
               }
             }));
