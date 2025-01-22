@@ -42,7 +42,7 @@ class _ProfilePage extends State<ProfilePage> {
     return Scaffold(
         appBar: AppBar(
           leading: const BackButton(color: Colors.white),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.green[800],
           title: const Text(
             "LusoVest",
             style: TextStyle(color: Colors.white),
@@ -59,7 +59,7 @@ class _ProfilePage extends State<ProfilePage> {
                 if (snapshot.data["image"] != "") {
                   image = Image.memory(
                     base64Decode(snapshot.data["image"].replaceAll("-", "/")),
-                    height: 200.0,
+                    height: 250.0,
                   );
                 }
 
@@ -68,31 +68,55 @@ class _ProfilePage extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: image),
-                      Text(snapshot.data["username"]),
-                      Text(snapshot.data["email"]),
-                      Text("Morada: " + snapshot.data['address']),
-                      Text("Género: " + snapshot.data['gender']),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 24),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            child: image),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(snapshot.data["username"], style: const TextStyle(
+                            fontSize: 28.0,
+                            fontWeight: FontWeight.bold,)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(snapshot.data["email"], style: TextStyle(fontSize: 24)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Morada: " + snapshot.data['address'], style: TextStyle(fontSize: 24)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Género: " + snapshot.data['gender'], style: TextStyle(fontSize: 24)),
+                      ),
+                      Expanded(child: Container()),
                       Row(
                         children: [
                           Expanded(
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, "/editprofilepage",
-                                      arguments: {
-                                        "username": snapshot.data["username"],
-                                        "address": snapshot.data["address"],
-                                        "gender": snapshot.data["gender"]
-                                      });
-                                },
-                                child: Text("Editar perfil")),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 24, right: 8, bottom: 64),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, "/editprofilepage",
+                                        arguments: {
+                                          "username": snapshot.data["username"],
+                                          "address": snapshot.data["address"],
+                                          "gender": snapshot.data["gender"]
+                                        });
+                                  },
+                                  child: Text("Editar perfil", style: TextStyle(color: Colors.black, fontSize: 20))),
+                            ),
                           ),
                           Expanded(
-                            child: ElevatedButton(
-                                onPressed: () {}, child: Text("Log out")),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8, right: 24, bottom: 64),
+                              child: ElevatedButton(
+                                  onPressed: () {}, child: Text("Log out", style: TextStyle(color: Colors.black, fontSize: 20))),
+                            ),
                           ),
                         ],
                       )

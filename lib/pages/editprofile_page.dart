@@ -258,7 +258,7 @@ class _EditProfilePage extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.green[800],
         title: const Text(
           "LusoVest",
           style: TextStyle(color: Colors.white),
@@ -293,7 +293,7 @@ class _EditProfilePage extends State<EditProfilePage> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom:6),
             child: TextField(
               controller: usernameController,
               keyboardType: TextInputType.name,
@@ -304,7 +304,7 @@ class _EditProfilePage extends State<EditProfilePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom:6),
             child: TextField(
               controller: addressController,
               keyboardType: TextInputType.name,
@@ -315,7 +315,7 @@ class _EditProfilePage extends State<EditProfilePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom:6),
             child: TextField(
               controller: genderController,
               keyboardType: TextInputType.name,
@@ -335,39 +335,51 @@ class _EditProfilePage extends State<EditProfilePage> {
             onTap: () {
               passwordDialog(context);
             },
-            child: Container(
-              height: 50,
-              child: Row(
-                children: [
-                  Expanded(child: Text('Alterar password')),
-                  Icon(Icons.arrow_forward_ios)
-                ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(child: Text('Alterar password',)),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
               ),
             ),
           ),
-          Expanded(child: SizedBox()),
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  username = usernameController.text;
-                  address = addressController.text;
-                  gender = genderController.text;
-
-                  putCall(username, gender, address, imgForApi);
-                });
-              },
-              child: const Text(
-                "Editar",
-                style: TextStyle(fontSize: 24),
-              )),
-          ElevatedButton(
-              onPressed: () {
-                deleteCall();
-              },
-              child: const Text(
-                "Eliminar",
-                style: TextStyle(fontSize: 24),
-              )),
+          Padding(
+            padding: const EdgeInsets.only(top: 48, left: 24, right: 24),
+            child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    username = usernameController.text;
+                    address = addressController.text;
+                    gender = genderController.text;
+            
+                    putCall(username, gender, address, imgForApi);
+                  });
+                },
+                child: const Text(
+                  "Editar",
+                  style: TextStyle(fontSize: 24,color: Colors.black),
+                )),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20, left: 24, right: 24),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+              ),
+                onPressed: () {
+                  deleteCall();
+                },
+                child: const Text(
+                  "Eliminar",
+                  style: TextStyle(fontSize: 24),
+                )),
+          ),
         ],
       )),
     );

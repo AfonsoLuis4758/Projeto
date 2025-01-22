@@ -78,7 +78,7 @@ class _ItemPage extends State<ItemPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.green[800],
         title: const Text(
           "LusoVest",
           style: TextStyle(color: Colors.white),

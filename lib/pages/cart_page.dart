@@ -272,7 +272,6 @@ class _CartPage extends State<CartPage> {
                             if (section == "cart") {
                               buttonWidget = Row(
                                 children: [
-                                  Expanded(child: Container()),
                                   Expanded(
                                     child: InkWell(
                                         onTap: () {
@@ -354,7 +353,7 @@ class _CartPage extends State<CartPage> {
                                   color: Colors.green,
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   elevation: 5,
                                   child: Column(
