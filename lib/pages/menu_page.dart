@@ -15,7 +15,8 @@ class MenuPage extends StatefulWidget {
 class _MenuPage extends State<MenuPage> {
   IconData gridType = Icons.grid_3x3;
   int cardCount = 2;
-  double width = 1.5;
+  double? imageheight = 180.00;
+  double width = 1.75;
   Color discountColor = Colors.green;
   List discountPrice = [];
   List userWishlist = [];
@@ -263,7 +264,9 @@ class _MenuPage extends State<MenuPage> {
       prefs.setString("gender", resp["gender"]);
       role = resp["role"];
       setState(() {
-        visibility = true;
+        if (role == "admin") {
+          visibility = true;
+        }
       });
       return resp["wishlist"];
     }
@@ -344,7 +347,7 @@ class _MenuPage extends State<MenuPage> {
                     Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 24),
+                          padding: const EdgeInsets.only(left: 16),
                           child: Text(
                             category,
                             style: TextStyle(fontSize: 32),
@@ -352,7 +355,7 @@ class _MenuPage extends State<MenuPage> {
                         ),
                         Expanded(child: Container()),
                         Padding(
-                          padding: const EdgeInsets.only(left: 64, right: 8),
+                          padding: const EdgeInsets.only(right: 8),
                           child: ElevatedButton(
                               onPressed: () {
                                 filterPop();
@@ -370,11 +373,13 @@ class _MenuPage extends State<MenuPage> {
                                 setState(() {
                                   if (cardCount == 2) {
                                     cardCount = 1;
+                                    imageheight = null;
                                     width = 1.3;
                                     gridType = Icons.list;
                                   } else {
                                     cardCount = 2;
-                                    width = 1.65;
+                                    imageheight = 180;
+                                    width = 1.75;
                                     gridType = Icons.grid_3x3;
                                   }
                                 });
@@ -399,7 +404,8 @@ class _MenuPage extends State<MenuPage> {
 
                             if (item["promotion"] != 0) {
                               discountColor = Colors.black;
-                              discountPrice.add(item["price"].toString());
+                              discountPrice
+                                  .add(item["price"].toStringAsFixed(2));
                             } else {
                               discountPrice.add("");
                             }
@@ -443,46 +449,44 @@ class _MenuPage extends State<MenuPage> {
                                       ),
                                       elevation: 5,
                                       child: Column(
-                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Hero(
                                               tag: "herotag" + item["_id"],
                                               child: Image.memory(
                                                 base64Decode(item["image"]
                                                     .replaceAll("-", "/")),
+                                                height: imageheight,
                                                 fit: BoxFit.cover,
                                               )),
-                                          Expanded(
-                                            child: Align(
-                                                alignment: Alignment.topLeft,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8, right: 8),
+                                          Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8, right: 8),
+                                                child: SizedBox(
+                                                  height: 50,
                                                   child: Text(item["name"],
                                                       style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 18,
-                                                          fontWeight: FontWeight.bold
-                                                          )),
-                                                )),
-                                          ),
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8, top: 4),
-                                                child: Text(
-                                                  (item["price"] *
-                                                          (1 -
-                                                              (item["promotion"] /
-                                                                  100)))
-                                                      .toStringAsFixed(2),
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 16),
+                                                          fontWeight:
+                                                              FontWeight.bold)),
                                                 ),
+                                              )),
+                                          Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8, top: 4),
+                                              child: Text(
+                                                (item["price"] *
+                                                        (1 -
+                                                            (item["promotion"] /
+                                                                100)))
+                                                    .toStringAsFixed(2),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16),
                                               ),
                                             ),
                                           ),
@@ -512,7 +516,8 @@ class _MenuPage extends State<MenuPage> {
                                                     isPressed[index] =
                                                         !isPressed[index];
                                                   });
-                                                  await wishlistCall(item["_id"]);
+                                                  await wishlistCall(
+                                                      item["_id"]);
                                                 },
                                                 child: Expanded(
                                                   child: Align(

@@ -16,7 +16,7 @@ class _CartPage extends State<CartPage> {
   IconData gridType = Icons.grid_3x3;
   int cardCount = 2;
   Color discountColor = Colors.green;
-  String discountPrice = "";
+  List discountPrice = [];
   String role = "guest";
   bool button = false;
   List userWishlist = [];
@@ -233,7 +233,7 @@ class _CartPage extends State<CartPage> {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.only(
-                              right: 24,left: 24, top: 16, bottom: 16),
+                              right: 24, left: 24, top: 16, bottom: 16),
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -288,8 +288,10 @@ class _CartPage extends State<CartPage> {
                           itemBuilder: (BuildContext context, int index) {
                             if (snapshot.data[index]["promotion"] != 0) {
                               discountColor = Colors.black;
-                              discountPrice =
-                                  snapshot.data[index]["price"].toString();
+                              discountPrice.add(snapshot.data[index]["price"]
+                                  .toStringAsFixed(2));
+                            } else {
+                              discountPrice.add("");
                             }
                             if (userWishlist
                                 .contains(snapshot.data[index]["_id"])) {
@@ -374,7 +376,7 @@ class _CartPage extends State<CartPage> {
                               );
                             } else {
                               buttonWidget = Padding(
-                                padding : const EdgeInsets.only(top: 30),
+                                padding: const EdgeInsets.only(top: 30),
                                 child: ElevatedButton(
                                   onPressed: () async {
                                     setState(() {});
@@ -446,6 +448,7 @@ class _CartPage extends State<CartPage> {
                                                   base64Decode(snapshot
                                                       .data[index]["image"]
                                                       .replaceAll("-", "/")),
+                                                  height: 180,
                                                   fit: BoxFit.cover,
                                                 )),
                                             Row(
@@ -453,9 +456,11 @@ class _CartPage extends State<CartPage> {
                                                 Expanded(child: Container()),
                                                 InkWell(
                                                     onTap: () {
-                                                      if (section == "wishlist") {
-                                                        wishlistCall(snapshot
-                                                            .data[index]["_id"]);
+                                                      if (section ==
+                                                          "wishlist") {
+                                                        wishlistCall(
+                                                            snapshot.data[index]
+                                                                ["_id"]);
                                                       } else if (section ==
                                                           "cart") {
                                                         cartCall(
@@ -475,22 +480,28 @@ class _CartPage extends State<CartPage> {
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 8, right: 8),
-                                          child: Text(
-                                              snapshot.data[index]["name"],
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18, 
-                                                  fontWeight: FontWeight.bold)),
+                                          child: SizedBox(
+                                            height: 50,
+                                            child: Text(
+                                                snapshot.data[index]["name"],
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 8, top: 4),
+                                          padding: const EdgeInsets.only(
+                                              left: 8, top: 4),
                                           child: Align(
                                             alignment: Alignment.topLeft,
                                             child: Text(
                                                 (snapshot.data[index]["price"] *
                                                         (1 -
-                                                            (snapshot.data[index]
-                                                                    ["promotion"] /
+                                                            (snapshot.data[
+                                                                        index][
+                                                                    "promotion"] /
                                                                 100)))
                                                     .toStringAsFixed(2),
                                                 style: TextStyle(
@@ -499,17 +510,18 @@ class _CartPage extends State<CartPage> {
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 8, top: 4),
+                                          padding: const EdgeInsets.only(
+                                              left: 8, top: 4),
                                           child: Align(
                                             alignment: Alignment.topLeft,
-                                            child: Text((discountPrice),
+                                            child: Text((discountPrice[index]),
                                                 style: TextStyle(
-                                                    decoration:
-                                                        TextDecoration.lineThrough,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
                                                     color: discountColor)),
                                           ),
                                         ),
-                                        buttonWidget,
+                                        Flexible(child: buttonWidget),
                                       ],
                                     ),
                                   ),

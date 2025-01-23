@@ -20,20 +20,8 @@ class _EditProductPage extends State<EditProductPage> {
   String gender = '';
   List<String> genders = ["Homem", "Mulher"];
   List<String> gendersfromApi = ["male", "female"];
-  List<String> types = [
-    "Calças",
-    "T-shirts",
-    "Sweatshirts",
-    "Casacos",
-    "Calçado"
-  ];
-  List<String> typesfromApi = [
-    "pants",
-    "shirts",
-    "sweatshirts",
-    "jackets",
-    "shoes"
-  ];
+  List<String> types = ["Calças", "T-shirts", "Sweatshirts", "Casacos"];
+  List<String> typesfromApi = ["pants", "shirts", "sweatshirts", "jackets"];
   String price = "";
   String stock = "";
   String promotion = "";
@@ -77,16 +65,8 @@ class _EditProductPage extends State<EditProductPage> {
     );
   }
 
-  late final arguments = (ModalRoute.of(context)?.settings.arguments ??
-      <String, dynamic>{}) as Map;
-
   String typeValue = "Calças";
   String genderValue = "Homem";
-
-  setValues() {
-    typeValue = typesfromApi[types.indexOf(arguments["type"])];
-    genderValue = typesfromApi[types.indexOf(arguments["gender"])];
-  }
 
   List<Color> ApiColors = [];
   List<Color> currentColors = [];
@@ -247,14 +227,19 @@ class _EditProductPage extends State<EditProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     setState(() {
       nameController.text = arguments["name"];
       priceController.text = arguments["price"].toString();
       stockController.text = arguments["stock"].toString();
       promotionController.text = arguments["promotion"].toString();
       recent = arguments["recent"];
+      typeValue = types[typesfromApi.indexOf(arguments["type"])];
+      genderValue = genders[gendersfromApi.indexOf(arguments["gender"])];
+      gender = arguments["gender"];
+      type = arguments["type"];
     });
-
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
@@ -530,9 +515,9 @@ class _EditProductPage extends State<EditProductPage> {
                   promotion = promotionController.text;
                   apiCall(
                       name,
-                      typeValue,
+                      type,
                       double.parse(stock),
-                      genderValue,
+                      gender,
                       double.parse(price),
                       colors,
                       sizes,
@@ -549,6 +534,7 @@ class _EditProductPage extends State<EditProductPage> {
           ElevatedButton(
               onPressed: () {
                 deleteCall(arguments["id"]);
+                Navigator.pushNamed(context, "/unloggedpage");
               },
               child: const Text(
                 "Eliminar",

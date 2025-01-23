@@ -14,7 +14,7 @@ class _CreateAccount extends State<CreateAccount> {
   String userName = '';
   String email = '';
   String passWord = '';
-  String gender = '';
+  String gender = 'male';
   String address = '';
   String token = "";
   List<String> genders = ["Homem", "Mulher"];
@@ -104,9 +104,7 @@ class _CreateAccount extends State<CreateAccount> {
       appBar: AppBar(
           leading: const BackButton(color: Colors.black),
           backgroundColor: Colors.white),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: ListView(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(48.0),
@@ -183,7 +181,8 @@ class _CreateAccount extends State<CreateAccount> {
                     List<Placemark> placemarks = await placemarkFromCoordinates(
                         position.latitude, position.longitude);
                     setState(() {
-                      String localidade = placemarks[0].toString();
+                      String localidade =
+                          "${placemarks[0].thoroughfare}, ${placemarks[0].subThoroughfare}, ${placemarks[0].locality}, ${placemarks[0].postalCode}, ${placemarks[0].country}";
                       addressController.text = localidade;
                     });
                   },

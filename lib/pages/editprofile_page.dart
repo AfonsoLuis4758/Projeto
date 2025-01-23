@@ -19,6 +19,8 @@ class _EditProfilePage extends State<EditProfilePage> {
   String address = "";
   String password = "";
   bool textVisible = false;
+  List<String> genders = ["Homem", "Mulher"];
+  List<String> gendersfromApi = ["male", "female"];
 
   final usernameController = TextEditingController();
   final genderController = TextEditingController();
@@ -28,6 +30,8 @@ class _EditProfilePage extends State<EditProfilePage> {
 
   Widget cameraWidget = const SizedBox();
   Widget galleryWidget = const SizedBox();
+
+  String genderValue = "";
 
   @override
   void initState() {
@@ -302,10 +306,13 @@ class _EditProfilePage extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
+
     setState(() {
       usernameController.text = arguments["username"];
       genderController.text = arguments["gender"];
       addressController.text = arguments["address"];
+      genderValue = genders[gendersfromApi.indexOf(arguments["gender"])];
+      gender = arguments["gender"];
     });
     return Scaffold(
       appBar: AppBar(
@@ -347,13 +354,28 @@ class _EditProfilePage extends State<EditProfilePage> {
           ),
           Padding(
             padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 6),
-            child: TextField(
-              controller: genderController,
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'O seu género',
+            child: DropdownButton<String>(
+              value: genderValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.black),
+              underline: Container(
+                height: 2,
+                color: Colors.black,
               ),
+              onChanged: (String? value) {
+                // This is called when the user selects an item.
+                setState(() {
+                  genderValue = value!;
+                  gender = gendersfromApi[genders.indexOf(genderValue)];
+                });
+              },
+              items: genders.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
           ),
           Visibility(

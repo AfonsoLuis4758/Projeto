@@ -31,14 +31,12 @@ class _CreationPage extends State<CreationPage> {
     "Camisolas",
     "Sweatshirts",
     "Casacos",
-    "Calçado"
   ];
   List<String> typesforApi = [
     "pants",
     "shirts",
     "sweatshirts",
     "jackets",
-    "shoes"
   ];
 
   final nameController = TextEditingController();
