@@ -132,49 +132,52 @@ class _ProfilePage extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  Expanded(child: Container()),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 24, right: 8, bottom: 64),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, "/editprofilepage",
-                                    arguments: {
-                                      "username": snapshot.data["username"],
-                                      "address": snapshot.data["address"],
-                                      "gender": snapshot.data["gender"]
-                                    });
-                              },
-                              child: Text("Editar perfil",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 20))),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 24, right: 8, bottom: 64),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, "/editprofilepage",
+                                      arguments: {
+                                        "username": snapshot.data["username"],
+                                        "address": snapshot.data["address"],
+                                        "gender": snapshot.data["gender"]
+                                      });
+                                },
+                                child: Text("Editar perfil",
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 20))),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8, right: 24, bottom: 64),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red),
-                              onPressed: () async {
-                                final SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.remove('token');
-                                prefs.remove('email');
-                                prefs.remove('role');
-                                prefs.remove('gender');
-                                Navigator.pushNamed(context, "/mainpage");
-                              },
-                              child: Text("Log out",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20))),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 24, bottom: 64),
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red),
+                                onPressed: () async {
+                                  final SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.remove('token');
+                                  prefs.remove('email');
+                                  prefs.remove('role');
+                                  prefs.remove('gender');
+                                  Navigator.pushNamed(context, "/mainpage");
+                                },
+                                child: Text("Log out",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20))),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   )
                 ]);
               }
