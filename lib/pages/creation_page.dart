@@ -47,6 +47,35 @@ class _CreationPage extends State<CreationPage> {
   String genderValue = "Homem";
   String typeValue = "Calças";
 
+  Widget cameraWidget = const SizedBox();
+  Widget galleryWidget = const SizedBox();
+  bool textVisibility = false;
+  @override
+  void initState() {
+    super.initState();
+    cameraWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.camera_alt_rounded,
+      ),
+      onPressed: () {
+        source = "camera";
+        takeSnapshot(source);
+      },
+    );
+
+    galleryWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.image,
+      ),
+      onPressed: () {
+        source = "gallery";
+        takeSnapshot(source);
+      },
+    );
+  }
+
   List<Color> ApiColors = [];
   List<Color> currentColors = [];
 
@@ -121,6 +150,9 @@ class _CreationPage extends State<CreationPage> {
       print("posted");
     } else {
       print("error");
+      setState(() {
+        textVisibility = true;
+      });
     }
   }
 
@@ -132,6 +164,15 @@ class _CreationPage extends State<CreationPage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        cameraWidget = InkWell(
+            onTap: () {
+              source = "camera";
+              takeSnapshot(source);
+            },
+            child: Image.memory(imgWidget, width: 150));
+      });
     }
     if (source == "gallery") {
       final XFile? img = await picker.pickImage(
@@ -139,6 +180,18 @@ class _CreationPage extends State<CreationPage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        galleryWidget = InkWell(
+            onTap: () {
+              source = "gallery";
+              takeSnapshot(source);
+            },
+            child: Image.memory(
+              imgWidget,
+              width: 150,
+            ));
+      });
     }
   }
 
@@ -158,28 +211,7 @@ class _CreationPage extends State<CreationPage> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.camera_alt_rounded,
-                ),
-                onPressed: () {
-                  source = "camera";
-                  takeSnapshot(source);
-                },
-              ),
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.image,
-                ),
-                onPressed: () {
-                  source = "gallery";
-                  takeSnapshot(source);
-                },
-              ),
-            ],
+            children: [cameraWidget, galleryWidget],
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -407,7 +439,14 @@ class _CreationPage extends State<CreationPage> {
                           });
                         }
                       }),
-                  const Text("Novidade")
+                  const Text("Novidade"),
+                  Visibility(
+                    child: Text(
+                      "Verifique todos os campos",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    visible: textVisibility,
+                  ),
                 ],
               )),
           Expanded(child: SizedBox()),

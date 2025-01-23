@@ -26,6 +26,35 @@ class _EditProfilePage extends State<EditProfilePage> {
   final passwordController = TextEditingController();
   final passwordController2 = TextEditingController();
 
+  Widget cameraWidget = const SizedBox();
+  Widget galleryWidget = const SizedBox();
+
+  @override
+  void initState() {
+    super.initState();
+    cameraWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.camera_alt_rounded,
+      ),
+      onPressed: () {
+        source = "camera";
+        takeSnapshot(source);
+      },
+    );
+
+    galleryWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.image,
+      ),
+      onPressed: () {
+        source = "gallery";
+        takeSnapshot(source);
+      },
+    );
+  }
+
   Future<String?> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
@@ -53,7 +82,9 @@ class _EditProfilePage extends State<EditProfilePage> {
     if (response.statusCode == 200) {
       print("posted");
     } else {
-      textVisible = true;
+      setState(() {
+        textVisible = true;
+      });
       print("error");
     }
   }
@@ -172,6 +203,15 @@ class _EditProfilePage extends State<EditProfilePage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        cameraWidget = InkWell(
+            onTap: () {
+              source = "camera";
+              takeSnapshot(source);
+            },
+            child: Image.memory(imgWidget, width: 150));
+      });
     }
     if (source == "gallery") {
       final XFile? img = await picker.pickImage(
@@ -179,6 +219,18 @@ class _EditProfilePage extends State<EditProfilePage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        galleryWidget = InkWell(
+            onTap: () {
+              source = "gallery";
+              takeSnapshot(source);
+            },
+            child: Image.memory(
+              imgWidget,
+              width: 150,
+            ));
+      });
     }
   }
 
@@ -269,31 +321,10 @@ class _EditProfilePage extends State<EditProfilePage> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.camera_alt_rounded,
-                ),
-                onPressed: () {
-                  source = "camera";
-                  takeSnapshot(source);
-                },
-              ),
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.image,
-                ),
-                onPressed: () {
-                  source = "gallery";
-                  takeSnapshot(source);
-                },
-              ),
-            ],
+            children: [cameraWidget, galleryWidget],
           ),
           Padding(
-            padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom:6),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 6),
             child: TextField(
               controller: usernameController,
               keyboardType: TextInputType.name,
@@ -304,7 +335,7 @@ class _EditProfilePage extends State<EditProfilePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom:6),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 6),
             child: TextField(
               controller: addressController,
               keyboardType: TextInputType.name,
@@ -315,7 +346,7 @@ class _EditProfilePage extends State<EditProfilePage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom:6),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 6, bottom: 6),
             child: TextField(
               controller: genderController,
               keyboardType: TextInputType.name,
@@ -341,7 +372,10 @@ class _EditProfilePage extends State<EditProfilePage> {
                 height: 50,
                 child: Row(
                   children: [
-                    Expanded(child: Text('Alterar password',)),
+                    Expanded(
+                        child: Text(
+                      'Alterar password',
+                    )),
                     Icon(Icons.arrow_forward_ios)
                   ],
                 ),
@@ -356,22 +390,22 @@ class _EditProfilePage extends State<EditProfilePage> {
                     username = usernameController.text;
                     address = addressController.text;
                     gender = genderController.text;
-            
+
                     putCall(username, gender, address, imgForApi);
                   });
                 },
                 child: const Text(
                   "Editar",
-                  style: TextStyle(fontSize: 24,color: Colors.black),
+                  style: TextStyle(fontSize: 24, color: Colors.black),
                 )),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20, left: 24, right: 24),
             child: ElevatedButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                backgroundColor: MaterialStateProperty.all(Colors.red),
-              ),
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                ),
                 onPressed: () {
                   deleteCall();
                 },

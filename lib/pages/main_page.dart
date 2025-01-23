@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/pages/cart_page.dart';
 import 'package:project/pages/menu_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project/pages/search_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -18,6 +19,16 @@ class _MainPage extends State<MainPage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future<void> _checkRoleAndNavigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? role = prefs.getString('role');
+    if (role == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
+    } else {
+      _navigateBottomBar(2);
+    }
   }
 
   final List _pages = [SearchPage(), MenuPage(), CartPage()];
@@ -39,7 +50,13 @@ class _MainPage extends State<MainPage> {
                 .copyWith(bodySmall: const TextStyle(color: Colors.green))),
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
-          onTap: _navigateBottomBar,
+          onTap: (index) async {
+            if (index == 2) {
+              await _checkRoleAndNavigate();
+            } else {
+              _navigateBottomBar(index);
+            }
+          },
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.search, color: Colors.white),
@@ -55,7 +72,8 @@ class _MainPage extends State<MainPage> {
                 activeIcon: Icon(Icons.menu_outlined, color: Colors.white)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart, color: Colors.white),
-                label: "Cesto", backgroundColor: Color(0xFF000000),
+                label: "Cesto",
+                backgroundColor: Color(0xFF000000),
                 activeIcon:
                     Icon(Icons.shopping_cart_outlined, color: Colors.white)),
           ],

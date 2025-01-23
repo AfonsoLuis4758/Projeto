@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:project/function/dialogue.dart';
 
 class MenuPage extends StatefulWidget {
   //secondPage
@@ -14,6 +15,7 @@ class MenuPage extends StatefulWidget {
 class _MenuPage extends State<MenuPage> {
   IconData gridType = Icons.grid_3x3;
   int cardCount = 2;
+  double width = 1.5;
   Color discountColor = Colors.green;
   List discountPrice = [];
   List userWishlist = [];
@@ -235,6 +237,11 @@ class _MenuPage extends State<MenuPage> {
         userWishlist = await userCall(prefs, futureToken);
       }
       return json.decode(response.body);
+    } else if (response.statusCode == 401 && prefs.getString('token') != null) {
+      await prefs.clear();
+      await showMyDialog(context);
+    } else {
+      print("error");
     }
   }
 
@@ -253,6 +260,8 @@ class _MenuPage extends State<MenuPage> {
     if (response.statusCode == 200) {
       final resp = json.decode(response.body);
       prefs.setString("role", resp["role"]);
+      prefs.setString("gender", resp["gender"]);
+      role = resp["role"];
       setState(() {
         visibility = true;
       });
@@ -281,6 +290,16 @@ class _MenuPage extends State<MenuPage> {
     }
   }
 
+  Future<void> _checkRoleAndNavigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? role = prefs.getString('role');
+    if (role == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
+    } else {
+      Navigator.pushNamed(context, "/profilepage");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -297,8 +316,8 @@ class _MenuPage extends State<MenuPage> {
                 Icons.account_circle_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/profilepage");
+              onPressed: () async {
+                await _checkRoleAndNavigate();
               },
             )
           ],
@@ -325,7 +344,7 @@ class _MenuPage extends State<MenuPage> {
                     Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 24, right: 48),
+                          padding: const EdgeInsets.only(left: 24),
                           child: Text(
                             category,
                             style: TextStyle(fontSize: 32),
@@ -342,26 +361,30 @@ class _MenuPage extends State<MenuPage> {
                                 color: Colors.black54,
                               )),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right : 24, top: 16, bottom: 16, left: 8),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (cardCount == 2) {
-                                    cardCount = 1;
-                                    gridType = Icons.list;
-                                  } else {
-                                    cardCount = 2;
-                                    gridType = Icons.grid_3x3;
-                                  }
-                                });
-                              },
-                              child: Icon(
-                                gridType,
-                                color: Colors.black54,
-                              )
-                            ),
-                          )
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                right: 24, top: 16, bottom: 16, left: 16),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (cardCount == 2) {
+                                      cardCount = 1;
+                                      width = 1.3;
+                                      gridType = Icons.list;
+                                    } else {
+                                      cardCount = 2;
+                                      width = 1.65;
+                                      gridType = Icons.grid_3x3;
+                                    }
+                                  });
+                                },
+                                child: Icon(
+                                  gridType,
+                                  color: Colors.black54,
+                                )),
+                          ),
+                        )
                       ],
                     ),
                     Expanded(
@@ -369,7 +392,7 @@ class _MenuPage extends State<MenuPage> {
                           itemCount: filteredItems.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / 1.62),
+                            childAspectRatio: (1 / width),
                             crossAxisCount: cardCount,
                           ),
                           itemBuilder: (BuildContext context, int index) {
@@ -388,7 +411,8 @@ class _MenuPage extends State<MenuPage> {
                             }
                             return Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 16, left: 16),
+                                padding:
+                                    const EdgeInsets.only(right: 16, left: 16),
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(context, "/itempage",
@@ -404,72 +428,106 @@ class _MenuPage extends State<MenuPage> {
                                           "sizes": item["sizes"],
                                           "promotion": item["promotion"],
                                           "recent": item["recent"],
-                                          "wishlisted": isPressed[index]
+                                          "wishlisted": isPressed[index],
+                                          "role": role
                                         });
                                   },
-                                  child: Card(
-                                    margin: EdgeInsets.zero,
-                                    color: Colors.green,
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    elevation: 5,
-                                    child: Column(
-                                      children: [
-                                        Hero(
-                                            tag: "herotag" + item["_id"],
-                                            child: Image.memory(
-                                              base64Decode(item["image"]
-                                                  .replaceAll("-", "/")),
-                                              fit: BoxFit.cover,
-                                              height: 200,
-                                            )),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 8, right: 8),
-                                            child: Text(item["name"], style: TextStyle(color: Colors.white, fontSize: 18)),
-                                          )
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 8),
-                                            child: Text((item["price"] *
-                                                    (1 - (item["promotion"] / 100)))
-                                                .toStringAsFixed(2), style: TextStyle(color: Colors.white, fontSize: 14),),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Card(
+                                      margin: EdgeInsets.zero,
+                                      color: Colors.green,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      elevation: 5,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Hero(
+                                              tag: "herotag" + item["_id"],
+                                              child: Image.memory(
+                                                base64Decode(item["image"]
+                                                    .replaceAll("-", "/")),
+                                                fit: BoxFit.cover,
+                                              )),
+                                          Expanded(
+                                            child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8, right: 8),
+                                                  child: Text(item["name"],
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 18)),
+                                                )),
                                           ),
-                                        ),
-                                        Text((discountPrice[index]),
-                                            style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                color: discountColor)),
-                                          Expanded(child: Container()),
-                                        InkWell(
-                                          onTap: () async {
-                                            setState(() {
-                                              isPressed[index] =
-                                                  !isPressed[index];
-                                            });
-                                            await wishlistCall(item["_id"]);
-                                          },
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                Icons.favorite,
-                                                color: isPressed[index]
-                                                    ? Colors.red
-                                                    : Colors.white,
-                                                size: 24.0,
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8),
+                                                child: Text(
+                                                  (item["price"] *
+                                                          (1 -
+                                                              (item["promotion"] /
+                                                                  100)))
+                                                      .toStringAsFixed(2),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Text(
+                                                    (discountPrice[index]),
+                                                    style: TextStyle(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: discountColor)),
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(child: Container()),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: () async {
+                                                setState(() {
+                                                  isPressed[index] =
+                                                      !isPressed[index];
+                                                });
+                                                await wishlistCall(item["_id"]);
+                                              },
+                                              child: Expanded(
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  child: Icon(
+                                                    Icons.favorite,
+                                                    color: isPressed[index]
+                                                        ? Colors.red
+                                                        : Colors.white,
+                                                    size: 24.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

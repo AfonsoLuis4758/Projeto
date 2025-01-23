@@ -41,11 +41,41 @@ class _EditProductPage extends State<EditProductPage> {
   List colorCheckbox = [false, false, false, false, false, false];
   List sizeCheckbox = [false, false, false, false, false];
   List sizes = [];
+  bool textVisible = false;
 
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final stockController = TextEditingController();
   final promotionController = TextEditingController();
+
+  Widget cameraWidget = const SizedBox();
+  Widget galleryWidget = const SizedBox();
+
+  @override
+  void initState() {
+    super.initState();
+    cameraWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.camera_alt_rounded,
+      ),
+      onPressed: () {
+        source = "camera";
+        takeSnapshot(source);
+      },
+    );
+
+    galleryWidget = IconButton(
+      iconSize: 150,
+      icon: const Icon(
+        Icons.image,
+      ),
+      onPressed: () {
+        source = "gallery";
+        takeSnapshot(source);
+      },
+    );
+  }
 
   late final arguments = (ModalRoute.of(context)?.settings.arguments ??
       <String, dynamic>{}) as Map;
@@ -147,6 +177,9 @@ class _EditProductPage extends State<EditProductPage> {
     if (response.statusCode == 200) {
       print("posted");
     } else {
+      setState(() {
+        textVisible = true;
+      });
       print("error");
     }
   }
@@ -181,6 +214,15 @@ class _EditProductPage extends State<EditProductPage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        cameraWidget = InkWell(
+            onTap: () {
+              source = "camera";
+              takeSnapshot(source);
+            },
+            child: Image.memory(imgWidget, width: 150));
+      });
     }
     if (source == "gallery") {
       final XFile? img = await picker.pickImage(
@@ -188,6 +230,18 @@ class _EditProductPage extends State<EditProductPage> {
           imageQuality: 80);
       if (img == null) return;
       imgForApi = await img.readAsBytes();
+      Uint8List imgWidget = await img.readAsBytes();
+      setState(() {
+        galleryWidget = InkWell(
+            onTap: () {
+              source = "gallery";
+              takeSnapshot(source);
+            },
+            child: Image.memory(
+              imgWidget,
+              width: 150,
+            ));
+      });
     }
   }
 
@@ -215,28 +269,7 @@ class _EditProductPage extends State<EditProductPage> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.camera_alt_rounded,
-                ),
-                onPressed: () {
-                  source = "camera";
-                  takeSnapshot(source);
-                },
-              ),
-              IconButton(
-                iconSize: 150,
-                icon: const Icon(
-                  Icons.image,
-                ),
-                onPressed: () {
-                  source = "gallery";
-                  takeSnapshot(source);
-                },
-              ),
-            ],
+            children: [cameraWidget, galleryWidget],
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -475,7 +508,13 @@ class _EditProductPage extends State<EditProductPage> {
                           });
                         }
                       }),
-                  const Text("Novidade")
+                  const Text("Novidade"),
+                  Visibility(
+                      child: Text(
+                        "Erro, verifique todos os campos!",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      visible: textVisible),
                 ],
               )),
           Expanded(child: SizedBox()),
@@ -504,7 +543,7 @@ class _EditProductPage extends State<EditProductPage> {
                 });
               },
               child: const Text(
-                "Editar",
+                "Submeter",
                 style: TextStyle(fontSize: 24),
               )),
           ElevatedButton(

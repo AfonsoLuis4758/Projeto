@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:project/function/dialogue.dart';
 
 class CartPage extends StatefulWidget {
   //secondPage
@@ -24,17 +25,30 @@ class _CartPage extends State<CartPage> {
   bool visibility = false;
   String section = "cart";
   double total = 0;
+  int totalItems = 0;
 
-  double calculateTotal(List items) {
-    double total = 0;
+  void calculateTotalAndItems(List items) {
+    total = 0;
+    totalItems = 0;
     for (var item in items) {
-      total += item["price"] * (1 - (item["promotion"] / 100));
+      int quantity = 1;
+      var cartItem = userCart.singleWhere(
+        (cartItem) => cartItem["id"] == item["_id"],
+        orElse: () => null,
+      );
+      if (cartItem != null) {
+        quantity = cartItem["quantity"];
+      }
+      total += item["price"] * (1 - (item["promotion"] / 100)) * quantity;
+      totalItems += quantity;
     }
-    return total;
   }
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('role') == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
+    }
     final String? futureToken = prefs.getString('token');
     final String? email = prefs.getString('email');
     String token = futureToken!.substring(1, futureToken.length - 1);
@@ -54,6 +68,11 @@ class _CartPage extends State<CartPage> {
       userWishlist = userData[0];
       userCart = userData[1];
       return json.decode(response.body);
+    } else if (response.statusCode == 401 && prefs.getString('token') != null) {
+      await prefs.clear();
+      await showMyDialog(context);
+    } else {
+      print("error");
     }
   }
 
@@ -155,12 +174,26 @@ class _CartPage extends State<CartPage> {
     });
     if (response.statusCode == 200) {
       print("posted");
+      Navigator.pushNamed(context, "/purchasepage");
       return json.decode(response.body);
+    }
+  }
+
+  Future<void> _checkRoleAndNavigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? role = prefs.getString('role');
+    if (role == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (arguments != null && arguments["section"] != null) {
+      section = arguments["section"];
+      button = true;
+    }
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green[800],
@@ -175,7 +208,8 @@ class _CartPage extends State<CartPage> {
                 Icons.account_circle_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
+                await _checkRoleAndNavigate();
                 Navigator.pushNamed(context, "/profilepage");
               },
             )
@@ -189,7 +223,7 @@ class _CartPage extends State<CartPage> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                double total = calculateTotal(snapshot.data);
+                calculateTotalAndItems(snapshot.data);
                 // Display the fetched data
                 return Scaffold(
                   body: Column(children: [
@@ -198,49 +232,56 @@ class _CartPage extends State<CartPage> {
                       children: [
                         Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 24, right: 8, top: 16, bottom: 16),
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: button
-                                          ? Colors.white
-                                          : Colors.green
-                                  ),  
-                                  onPressed: () {
-                                    setState(() {
-                                      section = "cart";
-                                      button = false;
-                                      visibility = false;
-                                    });
-                                  },
-                                  child: Text("Carrinho",  style: TextStyle(color: button ? Colors.black : Colors.white),)),
-                            )),
+                          padding: const EdgeInsets.only(
+                              left: 24, right: 8, top: 16, bottom: 16),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      button ? Colors.white : Colors.green),
+                              onPressed: () {
+                                setState(() {
+                                  section = "cart";
+                                  button = false;
+                                  visibility = false;
+                                });
+                              },
+                              child: Text(
+                                "Carrinho",
+                                style: TextStyle(
+                                    color:
+                                        button ? Colors.black : Colors.white),
+                              )),
+                        )),
                         Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 24, top: 16, bottom: 16),
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: button
-                                          ? Colors.green
-                                          : Colors.white),
-                                          
-                                  onPressed: () {
-                                    setState(() {
-                                      section = "wishlist";
-                                      button = true;
-                                      visibility = true;
-                                    });
-                                    TextStyle(color: Colors.white);
-                                  },
-                                  
-                                  child: Text("Wishlist", style: TextStyle(color: button ? Colors.white : Colors.black),)),
-                            )),
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 24, top: 16, bottom: 16),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      button ? Colors.green : Colors.white),
+                              onPressed: () {
+                                setState(() {
+                                  section = "wishlist";
+                                  button = true;
+                                  visibility = true;
+                                });
+                                TextStyle(color: Colors.white);
+                              },
+                              child: Text(
+                                "Wishlist",
+                                style: TextStyle(
+                                    color:
+                                        button ? Colors.white : Colors.black),
+                              )),
+                        )),
                       ],
                     ),
                     Expanded(
                       child: GridView.builder(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: (1 / 1.62),
+                            childAspectRatio: (1 / 1.75),
                             crossAxisCount: cardCount,
                           ),
                           itemCount: snapshot.data.length,
@@ -256,6 +297,8 @@ class _CartPage extends State<CartPage> {
                             } else {
                               isPressed.add(false);
                             }
+                            total += snapshot.data[index]["price"] *
+                                (1 - (snapshot.data[index]["promotion"] / 100));
 
                             int quantity = 1;
                             var cartItem = userCart.singleWhere(
@@ -277,27 +320,55 @@ class _CartPage extends State<CartPage> {
                                         onTap: () {
                                           setState(() {
                                             quantity--;
-                                            cartCall(
-                                                snapshot.data[index]["_id"],
-                                                quantity,
-                                                snapshot.data[index]["color"][0],
-                                                snapshot.data[index]["sizes"][0]);
+                                            totalItems--;
+                                            total -= snapshot.data[index]
+                                                    ["price"] *
+                                                (1 -
+                                                    (snapshot.data[index]
+                                                            ["promotion"] /
+                                                        100));
+                                            if (quantity == 0) {
+                                              cartCall(
+                                                  snapshot.data[index]["_id"],
+                                                  quantity,
+                                                  snapshot.data[index]["color"]
+                                                      [0],
+                                                  snapshot.data[index]["sizes"]
+                                                      [0]);
+                                            } else {
+                                              cartQuantityCall(
+                                                  snapshot.data[index]["_id"],
+                                                  quantity);
+                                            }
                                           });
                                         },
-                                        child: Icon(Icons.arrow_back_ios, color: Colors.white)),
+                                        child: Icon(Icons.arrow_back_ios,
+                                            color: Colors.white)),
                                   ),
-                                  Text("$quantity", style: TextStyle(color: Colors.white, fontSize: 20),),
+                                  Text(
+                                    "$quantity",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
                                   Expanded(
                                     child: InkWell(
                                         onTap: () {
                                           setState(() {
                                             quantity++;
+                                            totalItems++;
+                                            total += snapshot.data[index]
+                                                    ["price"] *
+                                                (1 -
+                                                    (snapshot.data[index]
+                                                            ["promotion"] /
+                                                        100));
                                             cartQuantityCall(
                                                 snapshot.data[index]["_id"],
                                                 quantity);
                                           });
                                         },
-                                        child: Icon(Icons.arrow_forward_ios, color: Colors.white)),
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            color: Colors.white)),
                                   ),
                                 ],
                               );
@@ -319,7 +390,10 @@ class _CartPage extends State<CartPage> {
                                         snapshot.data[index]["sizes"][0]);
                                   }
                                 },
-                                child: Text("Carrinho", style: TextStyle(color: Colors.black),),
+                                child: Text(
+                                  "Carrinho",
+                                  style: TextStyle(color: Colors.black),
+                                ),
                               );
                             }
 
@@ -394,26 +468,35 @@ class _CartPage extends State<CartPage> {
                                         ],
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8, right: 8),
-                                        child: Text(snapshot.data[index]["name"], style: TextStyle(color: Colors.white, fontSize: 18)),
+                                        padding: const EdgeInsets.only(
+                                            left: 8, right: 8),
+                                        child: Text(
+                                            snapshot.data[index]["name"],
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18)),
                                       ),
                                       Align(
                                         alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 8),
-                                          child: Text((snapshot.data[index]["price"] *
-                                                  (1 -
-                                                      (snapshot.data[index]
-                                                              ["promotion"] /
-                                                          100)))
-                                              .toString(), style: TextStyle(color: Colors.white, fontSize: 14)),
-                                        ),
+                                        child: Text(
+                                            (snapshot.data[index]["price"] *
+                                                    (1 -
+                                                        (snapshot.data[index]
+                                                                ["promotion"] /
+                                                            100)))
+                                                .toStringAsFixed(2),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14)),
                                       ),
-                                      Text((discountPrice),
-                                          style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: discountColor)),
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text((discountPrice),
+                                            style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                color: discountColor)),
+                                      ),
                                       buttonWidget,
                                     ],
                                   ),
@@ -427,7 +510,7 @@ class _CartPage extends State<CartPage> {
                         visible: !visibility,
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius : BorderRadius.only(
+                            borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -440,12 +523,17 @@ class _CartPage extends State<CartPage> {
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
-                                        "Número de artigos: ${snapshot.data.length}", style: TextStyle(fontSize: 20, color: Colors.white)),
+                                        "Número de artigos: $totalItems",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white)),
                                   ),
                                   Expanded(child: Container()),
                                   Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Text("Total: ${total.toStringAsFixed(2)}", style: TextStyle(fontSize: 20, color: Colors.white)),
+                                    child: Text(
+                                        "Total: ${total.toStringAsFixed(2)}",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white)),
                                   )
                                 ],
                               ),
@@ -456,13 +544,15 @@ class _CartPage extends State<CartPage> {
                                       await purchaseCall();
                                       setState(() {});
                                     },
-                                    child: Text("Comprar", style: TextStyle(color: Colors.black),)),
+                                    child: Text(
+                                      "Comprar",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
                               ),
                             ],
                           ),
                         ))
                   ]),
-                 
                 );
               }
             }));

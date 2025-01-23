@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:project/function/dialogue.dart';
 
 class ProfilePage extends StatefulWidget {
   //MainPage
@@ -34,6 +35,11 @@ class _ProfilePage extends State<ProfilePage> {
     );
     if (response.statusCode == 200) {
       return json.decode(response.body);
+    } else if (response.statusCode == 401 && prefs.getString('token') != null) {
+      await prefs.clear();
+      await showMyDialog(context);
+    } else {
+      print("error");
     }
   }
 
@@ -76,28 +82,56 @@ class _ProfilePage extends State<ProfilePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
-                        child: Text(snapshot.data["username"], style: const TextStyle(
-                            fontSize: 28.0,
-                            fontWeight: FontWeight.bold,)),
+                        child: Text(snapshot.data["username"],
+                            style: const TextStyle(
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold,
+                            )),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(snapshot.data["email"], style: TextStyle(fontSize: 24)),
+                        child: Text(snapshot.data["email"],
+                            style: TextStyle(fontSize: 24)),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Morada: " + snapshot.data['address'], style: TextStyle(fontSize: 24)),
+                        child: Text("Morada: " + snapshot.data['address'],
+                            style: TextStyle(fontSize: 24)),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Género: " + snapshot.data['gender'], style: TextStyle(fontSize: 24)),
+                        child: Text("Género: " + snapshot.data['gender'],
+                            style: TextStyle(fontSize: 24)),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/cartpage", arguments: {
+                            "section": "wishlist",
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Container(
+                            height: 50,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Text(
+                                  'Ir para wishlist',
+                                )),
+                                Icon(Icons.arrow_forward_ios)
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       Expanded(child: Container()),
                       Row(
                         children: [
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 24, right: 8, bottom: 64),
+                              padding: const EdgeInsets.only(
+                                  left: 24, right: 8, bottom: 64),
                               child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.pushNamed(
@@ -108,14 +142,28 @@ class _ProfilePage extends State<ProfilePage> {
                                           "gender": snapshot.data["gender"]
                                         });
                                   },
-                                  child: Text("Editar perfil", style: TextStyle(color: Colors.black, fontSize: 20))),
+                                  child: Text("Editar perfil",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20))),
                             ),
                           ),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 24, bottom: 64),
+                              padding: const EdgeInsets.only(
+                                  left: 8, right: 24, bottom: 64),
                               child: ElevatedButton(
-                                  onPressed: () {}, child: Text("Log out", style: TextStyle(color: Colors.black, fontSize: 20))),
+                                  onPressed: () async {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.remove('token');
+                                    prefs.remove('email');
+                                    prefs.remove('role');
+                                    prefs.remove('gender');
+                                    Navigator.pushNamed(context, "/mainpage");
+                                  },
+                                  child: Text("Log out",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20))),
                             ),
                           ),
                         ],

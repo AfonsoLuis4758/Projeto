@@ -36,7 +36,9 @@ class _LoginPage extends State<LoginPage> {
       });
       Navigator.pushNamed(context, "/mainpage");
     } else {
-      textVisible = true;
+      setState(() {
+        textVisible = true;
+      });
       print("error");
     }
   }
@@ -45,6 +47,9 @@ class _LoginPage extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+          leading: const BackButton(color: Colors.black),
+          backgroundColor: Colors.white),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -54,7 +59,8 @@ class _LoginPage extends State<LoginPage> {
             child: Image.asset("assets/images/LusoVeste.png"),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
+            padding:
+                const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
             child: TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -65,7 +71,8 @@ class _LoginPage extends State<LoginPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
+            padding:
+                const EdgeInsets.only(right: 24, left: 24, top: 16, bottom: 16),
             child: TextFormField(
               controller: passController,
               obscureText: !_passwordVisible,
@@ -88,7 +95,8 @@ class _LoginPage extends State<LoginPage> {
               ),
             ),
           ),
-          Visibility(visible: textVisible, child: Text("Email ou password invalidas")),
+          Visibility(
+              visible: textVisible, child: Text("Email ou password invalidas")),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 48),
@@ -109,7 +117,10 @@ class _LoginPage extends State<LoginPage> {
                   )),
             ),
           ),
-          Text("Não tens conta? Cria uma!", style: TextStyle(fontSize: 14),),
+          Text(
+            "Não tens conta? Cria uma!",
+            style: TextStyle(fontSize: 14),
+          ),
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 12),
@@ -123,8 +134,7 @@ class _LoginPage extends State<LoginPage> {
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54),
-                  )
-              ),
+                  )),
             ),
           ),
         ],

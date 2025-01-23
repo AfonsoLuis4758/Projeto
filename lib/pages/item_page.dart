@@ -60,6 +60,8 @@ class _ItemPage extends State<ItemPage> {
   late String selectedColor = arguments["color"][0];
   late String selectedSize = arguments["sizes"][0];
   late bool isPressed = arguments["wishlisted"];
+  bool adminVisibility = false;
+  bool userVisibility = false;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,14 @@ class _ItemPage extends State<ItemPage> {
     List torsoSizes = ["XS", "S", "M", "L", "XL"];
     List pantsSizes = [34, 36, 38, 40, 42];
     List sizes = [];
+
+    if (arguments["role"] == "admin") {
+      adminVisibility = true;
+      userVisibility = true;
+    } else if (arguments["role"] == "user") {
+      adminVisibility = false;
+      userVisibility = true;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -197,36 +207,42 @@ class _ItemPage extends State<ItemPage> {
               );
             }),
         Expanded(child: SizedBox()),
-        ElevatedButton(
-            onPressed: () async {
-              print(selectedSize);
-              await cartCall(arguments["id"], 1, selectedColor, selectedSize);
-              await wishlistCall(arguments["id"]);
-            },
-            child: const Text(
-              "Adicionar ao carrinho",
-              style: TextStyle(fontSize: 24),
-            )),
+        Visibility(
+          visible: userVisibility,
+          child: ElevatedButton(
+              onPressed: () async {
+                print(selectedSize);
+                await cartCall(arguments["id"], 1, selectedColor, selectedSize);
+                await wishlistCall(arguments["id"]);
+              },
+              child: const Text(
+                "Adicionar ao carrinho",
+                style: TextStyle(fontSize: 24),
+              )),
+        ),
       ]),
-      floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.yellow,
-        onPressed: () {
-          Navigator.pushNamed(context, "/editproductpage", arguments: {
-            "id": arguments["id"],
-            "image": arguments["image"],
-            "name": arguments["name"],
-            "gender": arguments["gender"],
-            "type": arguments["type"],
-            "stock": arguments["stock"],
-            "price": arguments["price"],
-            "color": arguments["color"],
-            "sizes": arguments["sizes"],
-            "promotion": arguments["promotion"],
-            "recent": arguments["recent"],
-          });
-        },
-        child: const Icon(Icons.edit),
+      floatingActionButton: Visibility(
+        visible: adminVisibility,
+        child: FloatingActionButton(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.yellow,
+          onPressed: () {
+            Navigator.pushNamed(context, "/editproductpage", arguments: {
+              "id": arguments["id"],
+              "image": arguments["image"],
+              "name": arguments["name"],
+              "gender": arguments["gender"],
+              "type": arguments["type"],
+              "stock": arguments["stock"],
+              "price": arguments["price"],
+              "color": arguments["color"],
+              "sizes": arguments["sizes"],
+              "promotion": arguments["promotion"],
+              "recent": arguments["recent"],
+            });
+          },
+          child: const Icon(Icons.edit),
+        ),
       ),
     );
   }

@@ -90,6 +90,9 @@ class _CreateAccount extends State<CreateAccount> {
       Navigator.pushNamed(context, "/loginpage");
     } else {
       print("error");
+      setState(() {
+        textVisible = true;
+      });
     }
   }
 
@@ -97,6 +100,9 @@ class _CreateAccount extends State<CreateAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+          leading: const BackButton(color: Colors.black),
+          backgroundColor: Colors.white),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -236,29 +242,6 @@ class _CreateAccount extends State<CreateAccount> {
                   )),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(40),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/mainpage");
-                  },
-                  child: Card(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            leading: const Icon(Icons.account_circle_rounded),
-                            title: Text("username = $token"),
-                            subtitle: Text("password = $passWord"),
-                          ),
-                        ]),
-                  ),
-                )
-              ],
-            ),
-          )
         ],
       ),
     );

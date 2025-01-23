@@ -8,6 +8,8 @@ import 'package:project/pages/menu_page.dart';
 import 'package:project/pages/unlogged_page.dart';
 import 'package:project/pages/creation_page.dart';
 import 'package:project/pages/item_page.dart';
+import 'package:project/pages/cart_page.dart';
+import 'package:project/pages/purchase_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async => runApp(const MyApp());
@@ -30,7 +32,9 @@ class MyApp extends StatelessWidget {
         "/editproductpage": (context) => const EditProductPage(),
         "/editprofilepage": (context) => const EditProfilePage(),
         "/menupage": (context) => const MenuPage(),
+        "/cartpage": (context) => const CartPage(),
         "/itempage": (context) => const ItemPage(),
+        "/purchasepage": (context) => PurchasePage(),
       },
     );
   }

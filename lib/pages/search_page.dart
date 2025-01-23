@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:project/func/dialogue.dart';
+import 'package:project/function/dialogue.dart';
 import 'dart:convert';
 //import 'dart:convert';
 
@@ -18,8 +18,22 @@ class _SearchPage extends State<SearchPage> {
   List<dynamic> searchResults = [];
   bool button = false;
   String? type;
-  String gender = "male";
+  String? gender = "male";
   Widget listview = Container();
+
+  Future<void> _getGender() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (prefs.getString("gender") != null) {
+        gender = prefs.getString('gender');
+        if (gender == "male") {
+          button = false;
+        } else {
+          button = true;
+        }
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -124,6 +138,7 @@ class _SearchPage extends State<SearchPage> {
       ),
     );
     super.initState();
+    _getGender();
   }
 
   final controller = TextEditingController();
@@ -166,8 +181,7 @@ class _SearchPage extends State<SearchPage> {
         data = json.decode(response.body);
       });
     } else if (response.statusCode == 401 && prefs.getString('token') != null) {
-      await prefs.remove('email');
-      await prefs.remove('token');
+      await prefs.clear();
       await showMyDialog(context);
     } else {
       print("error");
@@ -197,6 +211,14 @@ class _SearchPage extends State<SearchPage> {
     }
   }
 
+  Future<void> _checkRoleAndNavigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? role = prefs.getString('role');
+    if (role == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -209,12 +231,13 @@ class _SearchPage extends State<SearchPage> {
           iconTheme: const IconThemeData(color: Colors.white),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.account_circle_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/unloggedpage");
+              onPressed: () async {
+                await _checkRoleAndNavigate();
+                Navigator.pushNamed(context, "/profilepage");
               },
             )
           ],
@@ -226,51 +249,54 @@ class _SearchPage extends State<SearchPage> {
               children: [
                 Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 24,
-                        top: 24,
-                        right: 8,
-                        bottom: 24,
-                      ),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  button ? Colors.white : Colors.green),
-                          onPressed: () {
-                            setState(() {
-                              gender = "male";
-                              button = false;
-                            });
-                          },
-                          child: Text("Homem",
-                            style: TextStyle (color: button ? Colors.black : Colors.white,  fontSize: 18),
-                          )
-                      ),
-                    )),
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    top: 24,
+                    right: 8,
+                    bottom: 24,
+                  ),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              button ? Colors.white : Colors.green),
+                      onPressed: () {
+                        setState(() {
+                          gender = "male";
+                          button = false;
+                        });
+                      },
+                      child: Text(
+                        "Homem",
+                        style: TextStyle(
+                            color: button ? Colors.black : Colors.white,
+                            fontSize: 18),
+                      )),
+                )),
                 Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 8,
-                        top: 24,
-                        right: 24,
-                        bottom: 24,
-                      ),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  button ? Colors.green : Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              gender = "female";
-                              button = true;
-                            });
-                          },
-                          child: Text("Mulher", 
-                            style: TextStyle (color: button ? Colors.white : Colors.black, fontSize: 18),
-                          )
-                      ),
-                    )
-                ),
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    top: 24,
+                    right: 24,
+                    bottom: 24,
+                  ),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              button ? Colors.green : Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          gender = "female";
+                          button = true;
+                        });
+                      },
+                      child: Text(
+                        "Mulher",
+                        style: TextStyle(
+                            color: button ? Colors.white : Colors.black,
+                            fontSize: 18),
+                      )),
+                )),
               ],
             ),
             Padding(
@@ -323,4 +349,3 @@ Widget _searchListView(searchResults, gender) {
     ),
   );
 }
- 
