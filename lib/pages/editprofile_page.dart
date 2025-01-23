@@ -32,6 +32,7 @@ class _EditProfilePage extends State<EditProfilePage> {
   Widget galleryWidget = const SizedBox();
 
   String genderValue = "";
+  String ipv4 = "localhost";
 
   @override
   void initState() {
@@ -73,7 +74,7 @@ class _EditProfilePage extends State<EditProfilePage> {
     String token = futureToken!.substring(1, futureToken.length - 1);
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/password/$email"),
+      Uri.parse("http://$ipv4:5000/user/password/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -268,7 +269,7 @@ class _EditProfilePage extends State<EditProfilePage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/$email"),
+      Uri.parse("http://$ipv4:5000/user/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -291,7 +292,7 @@ class _EditProfilePage extends State<EditProfilePage> {
 
     http.Response response;
     response = await http.delete(
-      Uri.parse("http://localhost:5000/user/$email"),
+      Uri.parse("http://$ipv4:5000/user/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',

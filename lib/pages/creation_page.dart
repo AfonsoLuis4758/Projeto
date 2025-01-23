@@ -45,6 +45,8 @@ class _CreationPage extends State<CreationPage> {
   String genderValue = "Homem";
   String typeValue = "Calças";
 
+  String ipv4 = "localhost";
+
   Widget cameraWidget = const SizedBox();
   Widget galleryWidget = const SizedBox();
   bool textVisibility = false;
@@ -126,7 +128,7 @@ class _CreationPage extends State<CreationPage> {
 
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/product"),
+      Uri.parse("http://$ipv4:5000/product"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',

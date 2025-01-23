@@ -21,6 +21,7 @@ class _ProfilePage extends State<ProfilePage> {
 
   List<String> genders = ["Homem", "Mulher"];
   List<String> gendersfromApi = ["male", "female"];
+  String ipv4 = "localhost";
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,7 +31,7 @@ class _ProfilePage extends State<ProfilePage> {
 
     http.Response response;
     response = await http.get(
-      Uri.parse("http://localhost:5000/user/$email"),
+      Uri.parse("http://$ipv4:5000/user/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',

@@ -21,6 +21,8 @@ class _SearchPage extends State<SearchPage> {
   String? gender = "male";
   Widget listview = Container();
 
+  String ipv4 = "localhost";
+
   Future<void> _getGender() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -33,7 +35,7 @@ class _SearchPage extends State<SearchPage> {
         }
       }
     });
-  }   
+  }
 
   @override
   void initState() {
@@ -172,7 +174,7 @@ class _SearchPage extends State<SearchPage> {
 
     http.Response response;
     response = await http
-        .get(Uri.parse("http://localhost:5000/user/searches/$email"), headers: {
+        .get(Uri.parse("http://$ipv4:5000/user/searches/$email"), headers: {
       'Content-type': 'application/json',
       'Authorization': 'Bearer $token',
     });
@@ -196,7 +198,7 @@ class _SearchPage extends State<SearchPage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/searches/$email"),
+      Uri.parse("http://$ipv4:5000/user/searches/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',

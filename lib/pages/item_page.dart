@@ -10,6 +10,8 @@ class ItemPage extends StatefulWidget {
   State<ItemPage> createState() => _ItemPage();
 }
 
+String ipv4 = "localhost";
+
 Future wishlistCall(wish) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final String? futureToken = prefs.getString('token');
@@ -18,7 +20,7 @@ Future wishlistCall(wish) async {
 
   http.Response response;
   response = await http.put(
-    Uri.parse("http://localhost:5000/user/wishlist/$email"),
+    Uri.parse("http://$ipv4:5000/user/wishlist/$email"),
     headers: {
       'Content-type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -39,7 +41,7 @@ Future cartCall(item, quantity, color, size) async {
 
   http.Response response;
   response = await http.put(
-    Uri.parse("http://localhost:5000/user/cart/$email"),
+    Uri.parse("http://$ipv4:5000/user/cart/$email"),
     headers: {
       'Content-type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -144,7 +146,7 @@ class _ItemPage extends State<ItemPage> {
                         Color(int.parse("0xff${arguments["color"][index]}"));
                     double containerSize = 40;
                     if (arguments["color"][index] == selectedColor) {
-                      containerSize = 50;
+                      containerSize = 60;
                     }
                     return InkWell(
                       onTap: () {
@@ -193,7 +195,7 @@ class _ItemPage extends State<ItemPage> {
               }
               double fontsize = 30;
               if (arguments["sizes"][index] == selectedSize) {
-                fontsize = 40;
+                fontsize = 44;
               }
               return Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -212,7 +214,6 @@ class _ItemPage extends State<ItemPage> {
                 ),
               );
             }),
-        
         Visibility(
           visible: userVisibility,
           child: Padding(
@@ -220,7 +221,8 @@ class _ItemPage extends State<ItemPage> {
             child: ElevatedButton(
                 onPressed: () async {
                   print(selectedSize);
-                  await cartCall(arguments["id"], 1, selectedColor, selectedSize);
+                  await cartCall(
+                      arguments["id"], 1, selectedColor, selectedSize);
                   await wishlistCall(arguments["id"]);
                 },
                 child: const Text(

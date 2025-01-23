@@ -17,11 +17,12 @@ class _LoginPage extends State<LoginPage> {
   bool textVisible = false;
   final emailController = TextEditingController();
   final passController = TextEditingController();
+  String ipv4 = "localhost";
 
   Future apiCall(email, password) async {
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/user/login"),
+      Uri.parse("http://$ipv4:5000/user/login"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -26,6 +26,7 @@ class _CartPage extends State<CartPage> {
   String section = "cart";
   double total = 0;
   int totalItems = 0;
+  String ipv4 = "localhost";
 
   void calculateTotalAndItems(List items) {
     total = 0;
@@ -53,7 +54,7 @@ class _CartPage extends State<CartPage> {
     final String? email = prefs.getString('email');
     String token = futureToken!.substring(1, futureToken.length - 1);
 
-    String Url = "http://localhost:5000/user/$section/$email";
+    String Url = "http://$ipv4:5000/user/$section/$email";
 
     http.Response response;
     response = await http.get(
@@ -82,7 +83,7 @@ class _CartPage extends State<CartPage> {
 
     http.Response response;
     response = await http.get(
-      Uri.parse("http://localhost:5000/user/$email"),
+      Uri.parse("http://$ipv4:5000/user/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -104,7 +105,7 @@ class _CartPage extends State<CartPage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/wishlist/$email"),
+      Uri.parse("http://$ipv4:5000/user/wishlist/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -125,7 +126,7 @@ class _CartPage extends State<CartPage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/cart/$email"),
+      Uri.parse("http://$ipv4:5000/user/cart/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -147,7 +148,7 @@ class _CartPage extends State<CartPage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/cart/quantity/$email"),
+      Uri.parse("http://$ipv4:5000/user/cart/quantity/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -168,7 +169,7 @@ class _CartPage extends State<CartPage> {
 
     http.Response response;
     response = await http
-        .put(Uri.parse("http://localhost:5000/user/purchase/$email"), headers: {
+        .put(Uri.parse("http://$ipv4:5000/user/purchase/$email"), headers: {
       'Content-type': 'application/json',
       'Authorization': 'Bearer $token',
     });
@@ -184,6 +185,8 @@ class _CartPage extends State<CartPage> {
     final String? role = prefs.getString('role');
     if (role == null) {
       Navigator.pushNamed(context, "/unloggedpage");
+    } else {
+      Navigator.pushNamed(context, "/profilepage");
     }
   }
 
@@ -210,7 +213,6 @@ class _CartPage extends State<CartPage> {
               ),
               onPressed: () async {
                 await _checkRoleAndNavigate();
-                Navigator.pushNamed(context, "/profilepage");
               },
             )
           ],

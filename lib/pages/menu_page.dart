@@ -53,6 +53,7 @@ class _MenuPage extends State<MenuPage> {
   double _currentSliderValue = 120; //for filters
 
   Future? future;
+  String ipv4 = "localhost";
 
   @override
   void initState() {
@@ -214,12 +215,12 @@ class _MenuPage extends State<MenuPage> {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
         <String, dynamic>{}) as Map;
     final String? futureToken = prefs.getString('token');
-    String Url = "http://localhost:5000/product/products";
+    String Url = "http://$ipv4:5000/product/products";
 
     if (arguments["gender"] != null) {
       final type = arguments['type'];
       final gender = arguments['gender'];
-      Url = "http://localhost:5000/product/$type?gender=$gender";
+      Url = "http://$ipv4:5000/product/$type?gender=$gender";
       setState(() {
         final split = type.split('/');
         final Map values = {for (int i = 0; i < split.length; i++) i: split[i]};
@@ -253,7 +254,7 @@ class _MenuPage extends State<MenuPage> {
 
     http.Response response;
     response = await http.get(
-      Uri.parse("http://localhost:5000/user/$email"),
+      Uri.parse("http://$ipv4:5000/user/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -281,7 +282,7 @@ class _MenuPage extends State<MenuPage> {
 
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/user/wishlist/$email"),
+      Uri.parse("http://$ipv4:5000/user/wishlist/$email"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',

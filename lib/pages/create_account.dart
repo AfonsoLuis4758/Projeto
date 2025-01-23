@@ -20,6 +20,7 @@ class _CreateAccount extends State<CreateAccount> {
   List<String> genders = ["Homem", "Mulher"];
   List<String> gendersforApi = ["male", "female"];
   String genderValue = "Homem";
+  String ipv4 = "localhost";
 
   bool textVisible = false;
   bool _passwordVisible = false;
@@ -72,7 +73,7 @@ class _CreateAccount extends State<CreateAccount> {
   Future apiCall(username, password, email, address, gender) async {
     http.Response response;
     response = await http.post(
-      Uri.parse("http://localhost:5000/user/register"),
+      Uri.parse("http://$ipv4:5000/user/register"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

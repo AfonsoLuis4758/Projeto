@@ -39,6 +39,8 @@ class _EditProductPage extends State<EditProductPage> {
   Widget cameraWidget = const SizedBox();
   Widget galleryWidget = const SizedBox();
 
+  String ipv4 = "localhost";
+
   @override
   void initState() {
     super.initState();
@@ -146,7 +148,7 @@ class _EditProductPage extends State<EditProductPage> {
     }
     http.Response response;
     response = await http.put(
-      Uri.parse("http://localhost:5000/product/$id"),
+      Uri.parse("http://$ipv4:5000/product/$id"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -172,7 +174,7 @@ class _EditProductPage extends State<EditProductPage> {
 
     http.Response response;
     response = await http.delete(
-      Uri.parse("http://localhost:5000/product/$id"),
+      Uri.parse("http://$ipv4:5000/product/$id"),
       headers: {
         'Content-type': 'application/json',
         'Authorization': 'Bearer $token',
