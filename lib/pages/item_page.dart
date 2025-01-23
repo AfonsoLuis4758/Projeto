@@ -193,9 +193,9 @@ class _ItemPage extends State<ItemPage> {
               } else {
                 sizes.add(arguments["sizes"][index]);
               }
-              double fontsize = 30;
+              double containerRadius = 26;
               if (arguments["sizes"][index] == selectedSize) {
-                fontsize = 44;
+                containerRadius = 36;
               }
               return Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -206,11 +206,10 @@ class _ItemPage extends State<ItemPage> {
                     });
                   },
                   child: CircleAvatar(
-                      radius: 30,
+                      radius: containerRadius,
                       backgroundColor: Colors.green,
                       child: Text(sizes[index].toString(),
-                          style: TextStyle(
-                              fontSize: fontsize, color: Colors.white))),
+                          style: TextStyle(fontSize: 32, color: Colors.white))),
                 ),
               );
             }),
