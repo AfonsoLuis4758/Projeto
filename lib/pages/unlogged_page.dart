@@ -33,7 +33,7 @@ class UnloggedPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.all(24.0),
                 child: Text(
-                    "Faça log in para comprar artigos e outras funcionalidades", 
+                    "Faça log in para comprar artigos e ter acesso a outras funcionalidades", 
                     style: TextStyle(fontSize: 18),
                     textAlign: TextAlign.center,),
               )

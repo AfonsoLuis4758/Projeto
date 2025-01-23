@@ -33,7 +33,7 @@ class _SearchPage extends State<SearchPage> {
         }
       }
     });
-  }
+  }   
 
   @override
   void initState() {
@@ -216,6 +216,8 @@ class _SearchPage extends State<SearchPage> {
     final String? role = prefs.getString('role');
     if (role == null) {
       Navigator.pushNamed(context, "/unloggedpage");
+    } else {
+      Navigator.pushNamed(context, "/profilepage");
     }
   }
 
@@ -237,7 +239,6 @@ class _SearchPage extends State<SearchPage> {
               ),
               onPressed: () async {
                 await _checkRoleAndNavigate();
-                Navigator.pushNamed(context, "/profilepage");
               },
             )
           ],

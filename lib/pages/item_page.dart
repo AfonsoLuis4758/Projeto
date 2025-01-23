@@ -152,12 +152,15 @@ class _ItemPage extends State<ItemPage> {
                           selectedColor = arguments["color"][index];
                         });
                       },
-                      child: Container(
-                        width: containerSize,
-                        height: containerSize,
-                        decoration: new BoxDecoration(
-                          color: currentColor,
-                          shape: BoxShape.circle,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: containerSize,
+                          height: containerSize,
+                          decoration: new BoxDecoration(
+                            color: currentColor,
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ),
                     );
@@ -192,40 +195,46 @@ class _ItemPage extends State<ItemPage> {
               if (arguments["sizes"][index] == selectedSize) {
                 fontsize = 40;
               }
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedSize = arguments["sizes"][index];
-                  });
-                },
-                child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.green,
-                    child: Text(sizes[index].toString(),
-                        style: TextStyle(
-                            fontSize: fontsize, color: Colors.white))),
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      selectedSize = arguments["sizes"][index];
+                    });
+                  },
+                  child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.green,
+                      child: Text(sizes[index].toString(),
+                          style: TextStyle(
+                              fontSize: fontsize, color: Colors.white))),
+                ),
               );
             }),
-        Expanded(child: SizedBox()),
+        
         Visibility(
           visible: userVisibility,
-          child: ElevatedButton(
-              onPressed: () async {
-                print(selectedSize);
-                await cartCall(arguments["id"], 1, selectedColor, selectedSize);
-                await wishlistCall(arguments["id"]);
-              },
-              child: const Text(
-                "Adicionar ao carrinho",
-                style: TextStyle(fontSize: 24),
-              )),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: ElevatedButton(
+                onPressed: () async {
+                  print(selectedSize);
+                  await cartCall(arguments["id"], 1, selectedColor, selectedSize);
+                  await wishlistCall(arguments["id"]);
+                },
+                child: const Text(
+                  "Adicionar ao carrinho",
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                )),
+          ),
         ),
       ]),
       floatingActionButton: Visibility(
         visible: adminVisibility,
         child: FloatingActionButton(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.yellow,
+          backgroundColor: Colors.green,
           onPressed: () {
             Navigator.pushNamed(context, "/editproductpage", arguments: {
               "id": arguments["id"],

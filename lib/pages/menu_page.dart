@@ -70,6 +70,7 @@ class _MenuPage extends State<MenuPage> {
               builder: (context, state) {
                 return SingleChildScrollView(
                     child: Column(children: [
+                  const Text("Preço"),
                   Slider(
                     value: _currentSliderValue,
                     max: 120,

@@ -81,7 +81,7 @@ class _ProfilePage extends State<ProfilePage> {
                         child: image),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
+                    padding: const EdgeInsets.only(top: 12.0, left: 12),
                     child: Text(snapshot.data["username"],
                         style: const TextStyle(
                           fontSize: 28.0,
@@ -89,17 +89,17 @@ class _ProfilePage extends State<ProfilePage> {
                         )),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Text(snapshot.data["email"],
                         style: TextStyle(fontSize: 24)),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Text("Morada: " + snapshot.data['address'],
                         style: TextStyle(fontSize: 24)),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Text(
                         "Género: " +
                             genders[gendersfromApi
