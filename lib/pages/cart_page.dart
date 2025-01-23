@@ -233,7 +233,7 @@ class _CartPage extends State<CartPage> {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 24, right: 8, top: 16, bottom: 16),
+                              right: 24,left: 24, top: 16, bottom: 16),
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -255,7 +255,7 @@ class _CartPage extends State<CartPage> {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 8, right: 24, top: 16, bottom: 16),
+                              left: 24, right: 24, top: 16, bottom: 16),
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -373,26 +373,29 @@ class _CartPage extends State<CartPage> {
                                 ],
                               );
                             } else {
-                              buttonWidget = ElevatedButton(
-                                onPressed: () async {
-                                  setState(() {});
-                                  if (userCart.singleWhere(
-                                          (item) =>
-                                              item["id"] ==
-                                              snapshot.data[index]["_id"],
-                                          orElse: () => null) !=
-                                      null) {
-                                  } else {
-                                    await cartCall(
-                                        snapshot.data[index]["_id"],
-                                        1,
-                                        snapshot.data[index]["color"][0],
-                                        snapshot.data[index]["sizes"][0]);
-                                  }
-                                },
-                                child: Text(
-                                  "Carrinho",
-                                  style: TextStyle(color: Colors.black),
+                              buttonWidget = Padding(
+                                padding : const EdgeInsets.only(top: 30),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    setState(() {});
+                                    if (userCart.singleWhere(
+                                            (item) =>
+                                                item["id"] ==
+                                                snapshot.data[index]["_id"],
+                                            orElse: () => null) !=
+                                        null) {
+                                    } else {
+                                      await cartCall(
+                                          snapshot.data[index]["_id"],
+                                          1,
+                                          snapshot.data[index]["color"][0],
+                                          snapshot.data[index]["sizes"][0]);
+                                    }
+                                  },
+                                  child: Text(
+                                    "Carrinho",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               );
                             }
@@ -422,90 +425,100 @@ class _CartPage extends State<CartPage> {
                                         "wishlisted": isPressed[index]
                                       });
                                 },
-                                child: Card(
-                                  margin: EdgeInsets.zero,
-                                  color: Colors.green,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  elevation: 5,
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        children: [
-                                          Hero(
-                                              tag: "herotag" +
-                                                  snapshot.data[index]["_id"],
-                                              child: Image.memory(
-                                                base64Decode(snapshot
-                                                    .data[index]["image"]
-                                                    .replaceAll("-", "/")),
-                                                fit: BoxFit.cover,
-                                              )),
-                                          Row(
-                                            children: [
-                                              Expanded(child: Container()),
-                                              InkWell(
-                                                  onTap: () {
-                                                    if (section == "wishlist") {
-                                                      wishlistCall(snapshot
-                                                          .data[index]["_id"]);
-                                                    } else if (section ==
-                                                        "cart") {
-                                                      cartCall(
-                                                          snapshot.data[index]
-                                                              ["_id"],
-                                                          1,
-                                                          " ",
-                                                          " ");
-                                                    }
-                                                    setState(() {});
-                                                  },
-                                                  child: Icon(Icons.close)),
-                                            ],
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Card(
+                                    margin: EdgeInsets.zero,
+                                    color: Colors.green,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    elevation: 5,
+                                    child: Column(
+                                      children: [
+                                        Stack(
+                                          children: [
+                                            Hero(
+                                                tag: "herotag" +
+                                                    snapshot.data[index]["_id"],
+                                                child: Image.memory(
+                                                  base64Decode(snapshot
+                                                      .data[index]["image"]
+                                                      .replaceAll("-", "/")),
+                                                  fit: BoxFit.cover,
+                                                )),
+                                            Row(
+                                              children: [
+                                                Expanded(child: Container()),
+                                                InkWell(
+                                                    onTap: () {
+                                                      if (section == "wishlist") {
+                                                        wishlistCall(snapshot
+                                                            .data[index]["_id"]);
+                                                      } else if (section ==
+                                                          "cart") {
+                                                        cartCall(
+                                                            snapshot.data[index]
+                                                                ["_id"],
+                                                            1,
+                                                            " ",
+                                                            " ");
+                                                      }
+                                                      setState(() {});
+                                                    },
+                                                    child: Icon(Icons.close)),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8, right: 8),
+                                          child: Text(
+                                              snapshot.data[index]["name"],
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18, 
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 8, top: 4),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text(
+                                                (snapshot.data[index]["price"] *
+                                                        (1 -
+                                                            (snapshot.data[index]
+                                                                    ["promotion"] /
+                                                                100)))
+                                                    .toStringAsFixed(2),
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14)),
                                           ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8, right: 8),
-                                        child: Text(
-                                            snapshot.data[index]["name"],
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18)),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                            (snapshot.data[index]["price"] *
-                                                    (1 -
-                                                        (snapshot.data[index]
-                                                                ["promotion"] /
-                                                            100)))
-                                                .toStringAsFixed(2),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14)),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text((discountPrice),
-                                            style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                color: discountColor)),
-                                      ),
-                                      buttonWidget,
-                                    ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 8, top: 4),
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Text((discountPrice),
+                                                style: TextStyle(
+                                                    decoration:
+                                                        TextDecoration.lineThrough,
+                                                    color: discountColor)),
+                                          ),
+                                        ),
+                                        buttonWidget,
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ));
                           }),
                     ),
-                    Expanded(child: Container()),
+                    // Expanded(child: Container()),
                     Visibility(
                         visible: !visibility,
                         child: Container(

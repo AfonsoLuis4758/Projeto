@@ -103,24 +103,27 @@ class _ProfilePage extends State<ProfilePage> {
                         child: Text("Género: " + snapshot.data['gender'],
                             style: TextStyle(fontSize: 24)),
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, "/cartpage", arguments: {
-                            "section": "wishlist",
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Container(
-                            height: 50,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                  'Ir para wishlist',
-                                )),
-                                Icon(Icons.arrow_forward_ios)
-                              ],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, "/cartpage", arguments: {
+                              "section": "wishlist",
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Container(
+                              height: 50,
+                              child: const Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    'Ir para wishlist', style: TextStyle(fontSize: 20),
+                                  )),
+                                  Icon(Icons.arrow_forward_ios)
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -147,11 +150,14 @@ class _ProfilePage extends State<ProfilePage> {
                                           color: Colors.black, fontSize: 20))),
                             ),
                           ),
-                          Expanded(
+                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   left: 8, right: 24, bottom: 64),
                               child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red
+                                ),
                                   onPressed: () async {
                                     final SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
@@ -163,7 +169,7 @@ class _ProfilePage extends State<ProfilePage> {
                                   },
                                   child: Text("Log out",
                                       style: TextStyle(
-                                          color: Colors.black, fontSize: 20))),
+                                          color: Colors.white, fontSize: 20))),
                             ),
                           ),
                         ],

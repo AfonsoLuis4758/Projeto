@@ -350,6 +350,7 @@ class _MenuPage extends State<MenuPage> {
                             style: TextStyle(fontSize: 32),
                           ),
                         ),
+                        Expanded(child: Container()),
                         Padding(
                           padding: const EdgeInsets.only(left: 64, right: 8),
                           child: ElevatedButton(
@@ -361,29 +362,27 @@ class _MenuPage extends State<MenuPage> {
                                 color: Colors.black54,
                               )),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 24, top: 16, bottom: 16, left: 16),
-                            child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (cardCount == 2) {
-                                      cardCount = 1;
-                                      width = 1.3;
-                                      gridType = Icons.list;
-                                    } else {
-                                      cardCount = 2;
-                                      width = 1.65;
-                                      gridType = Icons.grid_3x3;
-                                    }
-                                  });
-                                },
-                                child: Icon(
-                                  gridType,
-                                  color: Colors.black54,
-                                )),
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              right: 20, top: 16, bottom: 16, left: 16),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (cardCount == 2) {
+                                    cardCount = 1;
+                                    width = 1.3;
+                                    gridType = Icons.list;
+                                  } else {
+                                    cardCount = 2;
+                                    width = 1.65;
+                                    gridType = Icons.grid_3x3;
+                                  }
+                                });
+                              },
+                              child: Icon(
+                                gridType,
+                                color: Colors.black54,
+                              )),
                         )
                       ],
                     ),
@@ -463,7 +462,9 @@ class _MenuPage extends State<MenuPage> {
                                                   child: Text(item["name"],
                                                       style: TextStyle(
                                                           color: Colors.white,
-                                                          fontSize: 18)),
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight.bold
+                                                          )),
                                                 )),
                                           ),
                                           Expanded(
@@ -471,7 +472,7 @@ class _MenuPage extends State<MenuPage> {
                                               alignment: Alignment.topLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 8),
+                                                    left: 8, top: 4),
                                                 child: Text(
                                                   (item["price"] *
                                                           (1 -
@@ -480,7 +481,7 @@ class _MenuPage extends State<MenuPage> {
                                                       .toStringAsFixed(2),
                                                   style: TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 14),
+                                                      fontSize: 16),
                                                 ),
                                               ),
                                             ),
@@ -490,7 +491,7 @@ class _MenuPage extends State<MenuPage> {
                                               alignment: Alignment.topLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 8.0),
+                                                    left: 8.0, top: 4),
                                                 child: Text(
                                                     (discountPrice[index]),
                                                     style: TextStyle(
@@ -502,25 +503,28 @@ class _MenuPage extends State<MenuPage> {
                                             ),
                                           ),
                                           Expanded(child: Container()),
-                                          Expanded(
-                                            child: InkWell(
-                                              onTap: () async {
-                                                setState(() {
-                                                  isPressed[index] =
-                                                      !isPressed[index];
-                                                });
-                                                await wishlistCall(item["_id"]);
-                                              },
-                                              child: Expanded(
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: Icon(
-                                                    Icons.favorite,
-                                                    color: isPressed[index]
-                                                        ? Colors.red
-                                                        : Colors.white,
-                                                    size: 24.0,
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Expanded(
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    isPressed[index] =
+                                                        !isPressed[index];
+                                                  });
+                                                  await wishlistCall(item["_id"]);
+                                                },
+                                                child: Expanded(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.bottomRight,
+                                                    child: Icon(
+                                                      Icons.favorite,
+                                                      color: isPressed[index]
+                                                          ? Colors.red
+                                                          : Colors.white,
+                                                      size: 24.0,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
