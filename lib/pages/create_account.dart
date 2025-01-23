@@ -99,6 +99,7 @@ class _CreateAccount extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
           leading: const BackButton(color: Colors.black),
