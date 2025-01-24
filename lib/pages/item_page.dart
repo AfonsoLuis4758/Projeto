@@ -67,8 +67,6 @@ class _ItemPage extends State<ItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    late final arguments = (ModalRoute.of(context)?.settings.arguments ??
-        <String, dynamic>{}) as Map;
     Color discountColor = Colors.white;
     String discountPrice = "";
     if (arguments["promotion"] != 0) {
@@ -120,17 +118,20 @@ class _ItemPage extends State<ItemPage> {
             children: [
               Text(arguments['name'], style: TextStyle(fontSize: 30)),
               Expanded(child: SizedBox()),
-              InkWell(
-                  onTap: () async {
-                    await wishlistCall(arguments["id"]);
-                    setState(() {
-                      isPressed = !isPressed;
-                    });
-                  },
-                  child: Icon(
-                    Icons.favorite,
-                    color: isPressed ? Colors.red : Colors.green,
-                  ))
+              Visibility(
+                visible: userVisibility,
+                child: InkWell(
+                    onTap: () async {
+                      await wishlistCall(arguments["id"]);
+                      setState(() {
+                        isPressed = !isPressed;
+                      });
+                    },
+                    child: Icon(
+                      Icons.favorite,
+                      color: isPressed ? Colors.red : Colors.green,
+                    )),
+              )
             ],
           ),
         ),

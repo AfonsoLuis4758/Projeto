@@ -16,8 +16,8 @@ class _CreationPage extends State<CreationPage> {
   List<int>? imgForApi;
   String source = "";
   String name = '';
-  String type = '';
-  String gender = '';
+  String type = 'pants';
+  String gender = 'male';
   String price = "";
   String stock = "";
   bool recent = true;
