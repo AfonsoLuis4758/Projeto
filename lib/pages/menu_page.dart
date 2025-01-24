@@ -21,7 +21,8 @@ class _MenuPage extends State<MenuPage> {
   List discountPrice = [];
   List userWishlist = [];
   List<bool> isPressed = [];
-  bool visibility = false;
+  bool adminVisibility = false;
+  bool userVisibility = false;
   String role = "guest";
   List sizes = ["XS", "S", "M", "L", "XL"];
   String category = "Todos";
@@ -267,7 +268,10 @@ class _MenuPage extends State<MenuPage> {
       role = resp["role"];
       setState(() {
         if (role == "admin") {
-          visibility = true;
+          adminVisibility = true;
+          userVisibility = true;
+        } else if (role == "user") {
+          userVisibility = true;
         }
       });
       return resp["wishlist"];
@@ -525,12 +529,15 @@ class _MenuPage extends State<MenuPage> {
                                                   child: Align(
                                                     alignment:
                                                         Alignment.bottomRight,
-                                                    child: Icon(
-                                                      Icons.favorite,
-                                                      color: isPressed[index]
-                                                          ? Colors.red
-                                                          : Colors.white,
-                                                      size: 24.0,
+                                                    child: Visibility(
+                                                      visible: userVisibility,
+                                                      child: Icon(
+                                                        Icons.favorite,
+                                                        color: isPressed[index]
+                                                            ? Colors.red
+                                                            : Colors.white,
+                                                        size: 24.0,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -548,7 +555,7 @@ class _MenuPage extends State<MenuPage> {
                     )
                   ]),
                   floatingActionButton: Visibility(
-                    visible: visibility,
+                    visible: adminVisibility,
                     child: FloatingActionButton(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.green,

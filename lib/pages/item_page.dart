@@ -65,6 +65,18 @@ class _ItemPage extends State<ItemPage> {
   bool adminVisibility = false;
   bool userVisibility = false;
 
+  Future<void> _checkRoleAndNavigate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? role = prefs.getString('role');
+    if (role == null) {
+      Navigator.pushNamed(context, "/unloggedpage");
+    } else {
+      Navigator.pushNamed(context, "/mainpage", arguments: {
+        "page": 2,
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Color discountColor = Colors.white;
@@ -96,13 +108,10 @@ class _ItemPage extends State<ItemPage> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Colors.white),
-            onPressed: () {
-              Navigator.pushNamed(context, "/mainpage", arguments: {
-                "page": 2,
-              });
-            },
-          )
+              icon: Icon(Icons.shopping_cart, color: Colors.white),
+              onPressed: () async {
+                await _checkRoleAndNavigate();
+              })
         ],
       ),
       body: Column(children: <Widget>[

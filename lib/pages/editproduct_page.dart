@@ -25,7 +25,6 @@ class _EditProductPage extends State<EditProductPage> {
   String price = "";
   String stock = "";
   String promotion = "";
-  bool recent = true;
   List colorCheckbox = [false, false, false, false, false, false];
   List sizeCheckbox = [false, false, false, false, false];
   List sizes = [];
@@ -227,16 +226,18 @@ class _EditProductPage extends State<EditProductPage> {
     }
   }
 
+  late final arguments = (ModalRoute.of(context)?.settings.arguments ??
+      <String, dynamic>{}) as Map;
+
+  late bool recent = arguments["recent"];
+
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ??
-        <String, dynamic>{}) as Map;
     setState(() {
       nameController.text = arguments["name"];
       priceController.text = arguments["price"].toString();
       stockController.text = arguments["stock"].toString();
       promotionController.text = arguments["promotion"].toString();
-      recent = arguments["recent"];
       typeValue = types[typesfromApi.indexOf(arguments["type"])];
       genderValue = genders[gendersfromApi.indexOf(arguments["gender"])];
       gender = arguments["gender"];

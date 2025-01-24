@@ -8,7 +8,7 @@ class UnloggedPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.white),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.green[800],
         title: const Text(
           "LusoVest",
           style: TextStyle(color: Colors.white),
@@ -20,9 +20,8 @@ class UnloggedPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black
-                ),
+                  style:
+                      ElevatedButton.styleFrom(foregroundColor: Colors.black),
                   onPressed: () {
                     Navigator.pushNamed(context, "/loginpage");
                   },
@@ -33,9 +32,10 @@ class UnloggedPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.all(24.0),
                 child: Text(
-                    "Faça log in para comprar artigos e ter acesso a outras funcionalidades", 
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,),
+                  "Faça log in para comprar artigos e ter acesso a outras funcionalidades",
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
               )
             ]),
       ),
