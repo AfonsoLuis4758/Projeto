@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 
 class CreateAccount extends StatefulWidget {
@@ -20,7 +21,7 @@ class _CreateAccount extends State<CreateAccount> {
   List<String> genders = ["Homem", "Mulher"];
   List<String> gendersforApi = ["male", "female"];
   String genderValue = "Homem";
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   bool textVisible = false;
   bool _passwordVisible = false;

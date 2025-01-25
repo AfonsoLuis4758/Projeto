@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 import 'package:project/function/dialogue.dart';
 
@@ -16,7 +17,7 @@ class _MenuPage extends State<MenuPage> {
   IconData gridType = Icons.grid_3x3;
   int cardCount = 2;
   double? imageheight = 180.00;
-  double width = 1.75;
+  double width = 1.78;
   Color discountColor = Colors.green;
   List discountPrice = [];
   List userWishlist = [];
@@ -54,7 +55,7 @@ class _MenuPage extends State<MenuPage> {
   double _currentSliderValue = 120; //for filters
 
   Future? future;
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   @override
   void initState() {

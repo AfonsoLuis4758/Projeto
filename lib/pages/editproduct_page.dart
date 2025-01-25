@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 
 class EditProductPage extends StatefulWidget {
@@ -38,7 +39,7 @@ class _EditProductPage extends State<EditProductPage> {
   Widget cameraWidget = const SizedBox();
   Widget galleryWidget = const SizedBox();
 
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   @override
   void initState() {

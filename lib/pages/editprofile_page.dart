@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 
 class EditProfilePage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _EditProfilePage extends State<EditProfilePage> {
   Widget galleryWidget = const SizedBox();
 
   String genderValue = "";
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   @override
   void initState() {

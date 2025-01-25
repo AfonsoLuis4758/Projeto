@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rowbuilder/rowbuilder.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 
 class ItemPage extends StatefulWidget {
@@ -10,7 +11,7 @@ class ItemPage extends StatefulWidget {
   State<ItemPage> createState() => _ItemPage();
 }
 
-String ipv4 = "localhost";
+String ipv4 = globals.ip;
 
 Future wishlistCall(wish) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -114,7 +115,7 @@ class _ItemPage extends State<ItemPage> {
               })
         ],
       ),
-      body: Column(children: <Widget>[
+      body: ListView(children: <Widget>[
         Hero(
             tag: "herotag" + arguments['id'],
             child: Image.memory(

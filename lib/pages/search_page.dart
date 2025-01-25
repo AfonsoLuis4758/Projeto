@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project/function/dialogue.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 //import 'dart:convert';
 
@@ -21,7 +22,7 @@ class _SearchPage extends State<SearchPage> {
   String? gender = "male";
   Widget listview = Container();
 
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   Future<void> _getGender() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -194,22 +195,24 @@ class _SearchPage extends State<SearchPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? futureToken = prefs.getString('token');
     final String? email = prefs.getString('email');
+    final String? role = prefs.getString('role');
     String token = futureToken!.substring(1, futureToken.length - 1);
+    if (role != null) {
+      http.Response response;
+      response = await http.put(
+        Uri.parse("http://$ipv4:5000/user/searches/$email"),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({"search": search}),
+      );
 
-    http.Response response;
-    response = await http.put(
-      Uri.parse("http://$ipv4:5000/user/searches/$email"),
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({"search": search}),
-    );
-
-    if (response.statusCode == 200) {
-      print("posted");
-    } else {
-      print("error");
+      if (response.statusCode == 200) {
+        print("posted");
+      } else {
+        print("error");
+      }
     }
   }
 
@@ -313,10 +316,11 @@ class _SearchPage extends State<SearchPage> {
                 padding: const EdgeInsets.all(16),
                 child: TextField(
                   onChanged: onQueryChanged,
+                  textInputAction: TextInputAction.search,
                   onSubmitted: (query) async {
-                    await sendToApi(query);
                     Navigator.pushNamed(context, "/menupage",
                         arguments: {"gender": gender, "type": "search/$query"});
+                    await sendToApi(query);
                   },
                   controller: controller,
                   decoration: const InputDecoration(

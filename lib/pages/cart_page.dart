@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:project/function/dialogue.dart';
+import 'package:project/function/my-globals.dart' as globals;
 
 class CartPage extends StatefulWidget {
   //secondPage
@@ -26,7 +27,7 @@ class _CartPage extends State<CartPage> {
   String section = "cart";
   double total = 0;
   int totalItems = 0;
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   void calculateTotalAndItems(List items) {
     total = 0;

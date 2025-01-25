@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project/function/my-globals.dart' as globals;
 import 'dart:convert';
 import 'package:project/function/dialogue.dart';
 
@@ -21,7 +22,7 @@ class _ProfilePage extends State<ProfilePage> {
 
   List<String> genders = ["Homem", "Mulher"];
   List<String> gendersfromApi = ["male", "female"];
-  String ipv4 = "localhost";
+  String ipv4 = globals.ip;
 
   Future apiCall() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
