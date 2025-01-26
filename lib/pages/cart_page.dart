@@ -56,6 +56,7 @@ class _CartPage extends State<CartPage> {
     String token = futureToken!.substring(1, futureToken.length - 1);
 
     String Url = "http://$ipv4:5000/user/$section/$email";
+    discountPrice = [];
 
     http.Response response;
     response = await http.get(
